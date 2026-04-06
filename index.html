@@ -1,249 +1,453 @@
 <!DOCTYPE html>
-<html lang="la">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Latinitatis PRO | Mysterium in Athenis</title>
+    <title>Coniuratio Catilinae - Escape Room Latino</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Ta'anga'i (Lucide Icons) -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Noto+Serif+Display:ital,wght@0,400;0,700&family=Playfair+Display:ital,wght@0,700;1,900&display=swap" rel="stylesheet">
+    <!-- Google Letrakuéra -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,700;1,900&display=swap" rel="stylesheet">
     <style>
-        :root { --marble: #FDFCF8; --terracotta: #8B322C; --gold: #C5A059; --ink: #1A1A1A; }
-        body { font-family: 'Noto Serif Display', serif; background-color: var(--marble); color: var(--ink); scroll-behavior: smooth; transition: 0.5s; }
-        body.dark-mode { background-color: #050505; color: #e2e2e2; }
-        .ancient { font-family: 'Cinzel', serif; letter-spacing: 0.08em; }
+        body {
+            font-family: 'Merriweather', serif;
+            background-color: #270808; 
+            color: #e2e8f0; 
+            background-image: radial-gradient(circle at center, #3f0a0a 0%, #140202 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        h1, h2, h3, .font-cinzel {
+            font-family: 'Cinzel', serif;
+        }
         .greek-display { font-family: 'Playfair Display', serif; }
+        /* Kuatia yma (Pergamino) */
+        .pergamino {
+            background-color: #fdf6e3;
+            color: #332b22;
+            box-shadow: inset 0 0 40px rgba(139, 115, 85, 0.3), 0 10px 20px rgba(0,0,0,0.8);
+            border: 1px solid #d4c49c;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" opacity="0.05"><rect width="200" height="200" fill="%238b7355"/><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="3" stitchTiles="stitch"/></filter><rect width="200" height="200" filter="url(%23n)" opacity="0.5"/></svg>');
+        }
+        .hidden-stage {
+            display: none;
+        }
+        .input-latino {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #94a3b8;
+            color: #f8fafc;
+            text-align: center;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .input-latino:focus {
+            border-bottom-color: #fbbf24; 
+        }
+        .candado-input {
+            width: 3rem;
+            height: 4rem;
+            font-size: 1.5rem;
+            text-align: center;
+            background: #3f0a0a;
+            border: 2px solid #991b1b;
+            border-radius: 0.5rem;
+            color: #fbbf24;
+            font-family: 'Cinzel', serif;
+        }
+        .candado-input:focus {
+            border-color: #fbbf24;
+            outline: none;
+        }
+        /* Oñemokañy umi hu'y input number-pe */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* Umi mba'e Latinitatis PRO pegua */
         .word-token { display: inline-block; padding: 0 4px; cursor: pointer; transition: 0.2s; border-radius: 4px; border-bottom: 2px solid transparent; }
-        .word-token:hover { color: var(--terracotta); background: rgba(139, 50, 44, 0.08); border-bottom-color: var(--gold); }
-        .dark-mode .word-token:hover { color: var(--gold); background: rgba(197, 160, 89, 0.1); }
-        .reading-now { background: var(--gold) !important; color: white !important; box-shadow: 0 4px 20px rgba(197, 160, 89, 0.6); transform: scale(1.1); z-index: 50; }
+        .word-token:hover { color: #8B322C; background: rgba(139, 50, 44, 0.1); border-bottom-color: #8B322C; }
         .drawer { transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); z-index: 200; }
-        .dark-mode .drawer { background-color: #0f0f0f !important; border-color: #262626 !important; }
-        .progress-bar { height: 100%; background: linear-gradient(90deg, var(--gold), #f3d498); width: 0%; transition: width 0.2s linear; }
-        .home-card { background: white; padding: 2rem; border-radius: 2rem; border: 1px solid #f0f0f0; transition: 0.4s; height: 100%; }
-        .dark-mode .home-card { background: #111; border-color: #222; }
         .lang-tag { font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 900; text-transform: uppercase; margin-right: 8px; display: inline-block; }
-        .bg-es { background: #fee2e2; color: #991b1b; } .bg-en { background: #dcfce7; color: #166534; } .bg-fr { background: #dbeafe; color: #1e40af; }
-        .legal-sect { border-left: 4px solid var(--terracotta); padding-left: 1.5rem; margin-bottom: 2rem; }
+        .bg-es { background: #fee2e2; color: #991b1b; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col pb-20">
+<body class="flex flex-col items-center p-4 md:p-8 relative">
 
-    <nav class="sticky top-0 z-[100] bg-white/90 backdrop-blur-md border-b border-stone-200 px-6 py-4 flex justify-between items-center no-print dark:bg-stone-950/90 dark:border-stone-800">
-        <div class="flex items-center gap-4 cursor-pointer" onclick="showHome()">
-            <div class="w-11 h-11 bg-stone-900 text-white rounded-xl flex items-center justify-center font-bold shadow-xl dark:bg-stone-100 dark:text-stone-900 uppercase">SPQR</div>
-            <h1 class="ancient text-lg font-black dark:text-white uppercase tracking-tighter">Latinitatis <span class="text-red-800">PRO</span></h1>
+    <!-- Akã ha Ára ra'ãha -->
+    <header class="w-full max-w-5xl flex justify-between items-center border-b border-red-900/50 pb-4 mb-8 hidden-stage" id="gameHeader">
+        <div class="text-xl md:text-2xl font-cinzel text-amber-500 tracking-widest">Senatus Populusque Romanus</div>
+        <div class="flex items-center gap-3 text-red-400 font-cinzel text-2xl font-bold bg-red-950 px-4 py-2 rounded-md shadow-lg border border-red-800">
+            <i data-lucide="clock" class="w-6 h-6"></i>
+            <span id="timerDisplay">45:00</span>
         </div>
-        <div class="flex gap-2">
-            <button onclick="toggleDarkMode()" class="p-2.5 bg-stone-100 rounded-full dark:bg-stone-800 dark:text-stone-200 transition-all"><i data-lucide="moon" id="theme-icon"></i></button>
-            <button onclick="toggleVocab(true)" class="p-2.5 bg-stone-100 rounded-full dark:bg-stone-800 dark:text-stone-200 transition-all text-terracotta" title="Vocabularium"><i data-lucide="book-a"></i></button>
-            <button onclick="toggleCodex(true)" class="flex items-center gap-2 px-4 py-2.5 bg-stone-100 rounded-full text-stone-700 font-bold dark:bg-stone-800 dark:text-stone-300">
-                <i data-lucide="scroll" class="w-4 h-4 text-terracotta"></i><span class="ancient text-[10px] uppercase">Codex</span>
-            </button>
-            <button onclick="toggleSidebar(true)" class="flex items-center gap-2 px-5 py-2.5 bg-stone-900 text-white rounded-full shadow-lg hover:bg-red-900 transition-all">
-                <i data-lucide="library" class="w-4 h-4 text-gold"></i><span class="ancient text-[10px] uppercase font-bold">Bibliotheca</span>
+    </header>
+
+    <!-- ÑEPYRŨHA (Intro) -->
+    <div id="introStage" class="w-full max-w-3xl flex flex-col items-center text-center mt-6 md:mt-12 space-y-8">
+        <h1 class="text-5xl md:text-6xl text-amber-500 tracking-widest uppercase text-shadow-sm">Coniuratio<br><span class="text-3xl md:text-4xl text-slate-300">Catilinae</span></h1>
+        
+        <div class="bg-black/60 p-8 rounded-lg border border-red-900/50 shadow-2xl backdrop-blur-sm w-full max-w-2xl">
+            <p class="text-lg md:text-xl leading-relaxed mb-8 text-slate-300 text-justify">
+                "Roma, año 63 a.C. Sois un grupo de senadores leales a la República. Catilina ha tramado una conjura para quemar la ciudad y asesinar a los cónsules. Cicerón acaba de pronunciar un encendido discurso en el templo de Júpiter Estator. Para evitar que Catilina escape y ordene el ataque a sus tropas, debéis descifrar las claves del discurso del cónsul. Tenéis 45 minutos antes de que arda Roma. Vuestra única arma: la gramática latina."
+            </p>
+            
+            <!-- Umi oheka va'erã héra (Team Name) -->
+            <div class="mb-6 bg-red-950/40 p-6 rounded border border-red-900/50">
+                <label for="teamName" class="block text-amber-500 font-cinzel text-lg mb-3">Identificación de los Senadores:</label>
+                <input type="text" id="teamName" class="w-full bg-black/50 border-2 border-red-900 text-white p-3 rounded font-cinzel focus:border-amber-500 focus:outline-none transition text-center text-lg shadow-inner" placeholder="Escribid vuestros nombres (Ej: Lucía, Marcos y Elena)" autocomplete="off">
+                <p id="name-error" class="text-red-400 text-sm mt-3 hidden font-bold">⚠️ El Senado requiere que os identifiquéis antes de entrar.</p>
+            </div>
+
+            <!-- Ñemongeta API (Groq) -->
+            <div class="mb-8 bg-red-950/40 p-6 rounded border border-red-900/50 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="text-left">
+                    <p class="text-amber-500 font-cinzel text-md mb-1 flex items-center gap-2"><i data-lucide="key" class="w-4 h-4"></i> Oráculo (API Groq)</p>
+                    <p class="text-xs text-slate-400">Requerido para generar el reto magistral aleatorio (console.groq.com).</p>
+                </div>
+                <button onclick="promptForKey()" class="px-4 py-2 bg-red-900 hover:bg-red-800 text-slate-200 text-xs font-cinzel rounded transition uppercase">Configurar Clavis</button>
+            </div>
+
+            <button onclick="startGame()" class="px-8 py-4 bg-gradient-to-r from-amber-700 to-red-800 hover:from-amber-600 hover:to-red-700 text-white font-cinzel font-bold text-xl rounded transition transform hover:scale-105 shadow-[0_0_15px_rgba(185,28,28,0.5)] w-full md:w-auto border border-red-500/50">
+                Entrar al Templo
             </button>
         </div>
-    </nav>
+    </div>
 
-    <main id="home-view" class="flex-1 p-6 md:p-12 max-w-7xl mx-auto w-full animate-in fade-in duration-500 no-print">
-        <header class="text-center mb-16">
-            <h2 class="greek-display text-6xl md:text-8xl font-black mb-4 dark:text-white italic tracking-tighter">Bibliotheca Latina</h2>
-            <p class="text-terracotta ancient text-xs md:text-sm uppercase tracking-[0.5em] font-bold dark:text-red-500">Personal Learning Environment (PLE)</p>
-        </header>
-
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 font-serif">
-            <div class="home-card space-y-3 shadow-md">
-                <h4 class="font-bold text-lg text-red-800 uppercase dark:text-red-500 ancient flex items-center gap-2"><i data-lucide="brain-circuit" class="w-5 h-5"></i> Cerebro Lingüístico</h4>
-                <p class="text-stone-600 text-sm dark:text-stone-400">Análisis contextual (sintaxis + morfología) mediante diferentes herramientas digitales de clásicas e IA.</p>
-            </div>
-            <div class="home-card space-y-3 shadow-md">
-                <h4 class="font-bold text-lg text-red-800 uppercase dark:text-red-500 ancient flex items-center gap-2"><i data-lucide="gamepad-2" class="w-5 h-5"></i> Gamificación</h4>
-                <p class="text-stone-600 text-sm dark:text-stone-400">Generación de ejercicios interactivos sorpresa en tiempo real. ¡Nunca será el mismo reto magistral!</p>
-            </div>
-            <div class="home-card space-y-3 shadow-md">
-                <h4 class="font-bold text-lg text-red-800 uppercase dark:text-red-500 ancient flex items-center gap-2"><i data-lucide="microscope" class="w-5 h-5"></i> Etimología</h4>
-                <p class="text-stone-600 text-sm dark:text-stone-400">El Oraculum te dirá qué palabras vienen de esa raíz indoeuropea. Ideal para entender nuestro vocabulario actual.</p>
-            </div>
-            <div class="home-card space-y-3 shadow-md">
-                <h4 class="font-bold text-lg text-red-800 uppercase dark:text-red-500 ancient flex items-center gap-2"><i data-lucide="headphones" class="w-5 h-5"></i> Modo Audiolibro</h4>
-                <p class="text-stone-600 text-sm dark:text-stone-400">La aplicación lee el texto en voz alta emulando la pronunciación clásica o eclesiástica. Control de velocidad incluido.</p>
-            </div>
-            <div class="home-card space-y-3 shadow-md">
-                <h4 class="font-bold text-lg text-red-800 uppercase dark:text-red-500 ancient flex items-center gap-2"><i data-lucide="hard-drive" class="w-5 h-5"></i> Memoria Permanente</h4>
-                <p class="text-stone-600 text-sm dark:text-stone-400">Privacidad total sin registros. Tus lecturas, notas y vocabulario se guardan en el LocalStorage de tu navegador.</p>
-            </div>
-        </section>
-
-        <section class="mb-16 p-8 bg-stone-900 text-white rounded-[3rem] shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8">
-            <div>
-                <h3 class="ancient text-gold text-2xl font-bold mb-2 flex items-center gap-3"><i data-lucide="key"></i> Clavis API (Groq)</h3>
-                <p class="text-sm text-stone-400 font-serif max-w-xl">Para habilitar el Oraculum, el Cerebro Lingüístico y la Gamificación, es necesario conectar la IA. Obtenga su clave gratuita en <b>console.groq.com</b>.</p>
-            </div>
-            <button onclick="promptForKey()" class="px-8 py-4 bg-white text-stone-900 rounded-full font-black uppercase tracking-widest hover:bg-gold transition-all ancient text-xs shadow-xl">Configurare</button>
-        </section>
-
-        <section class="mb-16 p-10 bg-red-50/30 dark:bg-stone-900 rounded-[3rem] border-2 border-dashed border-red-200 dark:border-stone-700">
-            <div class="text-center mb-8">
-                <h3 class="ancient text-2xl font-bold text-red-800 dark:text-red-500 uppercase tracking-widest">Interpretatio Externa</h3>
-                <p class="text-sm text-stone-500 italic mt-2">Cargue fragmentos externos de repositorios digitales para su análisis.</p>
-            </div>
-            <div class="flex flex-col gap-4">
-                <textarea id="external-input" class="w-full h-32 p-6 rounded-2xl border bg-white dark:bg-stone-950 dark:border-stone-800 font-serif text-lg" placeholder="Pega el texto latino aquí..."></textarea>
-                <button onclick="loadExternalText()" class="w-full py-4 bg-stone-900 text-white rounded-2xl ancient font-black uppercase tracking-widest hover:bg-red-800 transition-all">Interpretatio</button>
-            </div>
-        </section>
-
-        <footer class="bg-stone-100 border-t p-12 rounded-[3.5rem] dark:bg-stone-900 dark:border-stone-800 flex flex-col md:flex-row justify-between items-center gap-8 font-serif">
-            <div class="text-center md:text-left">
-                <p class="font-bold uppercase ancient text-sm mb-4 dark:text-stone-200">Alejandro Güeto • A.D. MMXXVI</p>
-                <div class="flex flex-wrap gap-4 justify-center md:justify-start">
-                    <button onclick="toggleLegal(true)" class="text-[11px] ancient font-bold text-stone-400 hover:text-red-800 underline uppercase">Aviso Legal</button>
-                    <button onclick="togglePrivacy(true)" class="text-[11px] ancient font-bold text-stone-400 hover:text-red-800 underline uppercase">Privacidad</button>
+    <!-- ÑEMBOSARÁI (Game Stage) -->
+    <div id="gameStage" class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-5 gap-8 hidden-stage">
+        
+        <!-- Oga yke asu: Kuatia ha Porandu Guasu -->
+        <div class="lg:col-span-2 flex flex-col h-full gap-6">
+            <div class="pergamino p-6 md:p-8 rounded-lg relative">
+                <div class="absolute top-4 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-amber-900/20 rounded-full"></div>
+                <h2 class="text-2xl font-cinzel text-center border-b-2 border-amber-900/20 pb-4 mb-6 mt-2 font-bold uppercase text-red-900">Acta Senatus</h2>
+                <div id="latin-container" class="text-lg leading-loose text-justify font-medium">
+                    <!-- JS omoingéta ko'ápe umi ñe'ẽ -->
+                </div>
+                <div class="mt-8 pt-4 border-t border-amber-900/20 text-sm italic text-amber-900/70">
+                    <p class="mb-2 font-bold flex items-center gap-2"><i data-lucide="info" class="w-4 h-4"></i> Haz clic en cualquier palabra para consultar el Oráculo.</p>
+                    <ul class="list-disc pl-5 space-y-1 mt-4">
+                        <li><strong>abutor -uti:</strong> abusar de (rige ablativo).</li>
+                        <li><strong>eludo -ere:</strong> burlar.</li>
+                        <li><strong>praesidium -ii:</strong> guardia, defensa.</li>
+                    </ul>
                 </div>
             </div>
-            <div class="flex flex-col items-center gap-2">
-                <a href="mailto:alejandroruizgueto@hotmail.es" class="px-6 py-2 bg-stone-800 text-white rounded-2xl ancient text-[9px] font-bold hover:bg-terracotta transition-all uppercase tracking-widest shadow-sm flex items-center gap-2"><i data-lucide="mail" class="w-3 h-3"></i> Contacto / Contact</a>
-                <button onclick="localStorage.removeItem('groq_key'); location.reload();" class="text-[9px] ancient text-stone-400 uppercase mt-2">Reset API</button>
-            </div>
-        </footer>
-    </main>
 
-    <main id="reader-view" class="hidden flex-1 p-4 md:p-12 max-w-[1500px] mx-auto w-full no-print">
-        
-        <div class="flex justify-between items-center mb-8 bg-white dark:bg-stone-900 p-4 rounded-full shadow-md border dark:border-stone-800 sticky top-24 z-40">
-            <button onclick="showHome()" class="flex items-center gap-2 px-4 py-2 text-stone-500 hover:text-red-800 ancient text-[10px] uppercase font-bold"><i data-lucide="arrow-left" class="w-4 h-4"></i> Domus</button>
-            <div class="flex gap-2">
-                <button onclick="saveToCodex()" class="p-3 bg-stone-100 dark:bg-stone-800 rounded-full hover:bg-gold transition-all text-stone-600 dark:text-stone-300" title="Guardar en Codex"><i data-lucide="bookmark" id="bookmark-icon" class="w-5 h-5"></i></button>
-                <button onclick="openNoteModal()" class="p-3 bg-stone-100 dark:bg-stone-800 rounded-full hover:bg-gold transition-all text-stone-600 dark:text-stone-300" title="Añadir Nota a este fragmento"><i data-lucide="pen-tool" class="w-5 h-5"></i></button>
+            <!-- Porandu Guasu (Reto Magistral) -->
+            <div class="bg-black/60 border border-red-900/50 p-6 rounded-lg shadow-lg relative overflow-hidden">
+                <h3 class="text-xl text-amber-500 mb-4 flex items-center gap-2 font-cinzel">
+                    <i data-lucide="brain-circuit" class="w-5 h-5"></i> Reto Magistral
+                </h3>
+                <p class="text-sm text-slate-300 mb-4">¿Necesitáis afilar la mente antes de juzgar a Catilina? El Oráculo puede generar un reto aleatorio.</p>
+                <button onclick="generateExercise()" class="w-full py-3 bg-red-900 hover:bg-red-800 text-white rounded font-cinzel text-sm uppercase tracking-widest transition-all shadow">Generar Reto</button>
+                <div id="exercise-area" class="hidden mt-6 pt-6 border-t border-red-900/50"></div>
             </div>
         </div>
 
-        <header class="text-center mb-16">
-            <h2 id="view-title" class="greek-display text-5xl md:text-8xl font-black italic dark:text-stone-100">Lectio</h2>
-            <p id="view-meta" class="text-red-800 ancient text-[11px] uppercase tracking-[0.4em] font-black mt-6 border-y border-stone-100 py-2 inline-block dark:border-stone-800"></p>
-        </header>
+        <!-- Oga yke akatúa: Umi Ñeha'ã -->
+        <div class="lg:col-span-3 flex flex-col space-y-6">
+            
+            <!-- ÑEHA'Ã 1 -->
+            <div id="prueba1" class="bg-black/60 border border-red-900/50 p-6 rounded-lg shadow-lg relative overflow-hidden transition-all duration-500">
+                <div class="absolute top-0 left-0 w-1 h-full bg-amber-500"></div>
+                <h3 class="text-2xl text-amber-500 mb-4 flex items-center gap-2 font-cinzel">
+                    <span class="bg-amber-900/50 p-2 rounded text-amber-300 border border-amber-700 text-sm">I</span> El Ojo de Júpiter (Sintaxis)
+                </h3>
+                <p class="mb-6 text-slate-300">Para demostrar vuestra valía ante el Senado, identificad tres estructuras clave en el exaltado discurso de Cicerón. Escribid la palabra exacta en latín.</p>
+                
+                <div class="space-y-4">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                        <label class="text-sm font-bold text-slate-400 w-full md:w-2/3">1. Verbo deponente en tiempo futuro:</label>
+                        <input type="text" id="p1-q1" class="input-latino w-full md:w-1/3" autocomplete="off" spellcheck="false" placeholder="verbo">
+                    </div>
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                        <label class="text-sm font-bold text-slate-400 w-full md:w-2/3">2. Infinitivo activo de la primera oración subordinada sustantiva:</label>
+                        <input type="text" id="p1-q2" class="input-latino w-full md:w-1/3" autocomplete="off" spellcheck="false" placeholder="infinitivo">
+                    </div>
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                        <label class="text-sm font-bold text-slate-400 w-full md:w-2/3">3. Sustantivo en ablativo exigido por el verbo 'abutor':</label>
+                        <input type="text" id="p1-q3" class="input-latino w-full md:w-1/3" autocomplete="off" spellcheck="false" placeholder="sustantivo">
+                    </div>
+                </div>
+                <div class="mt-6 text-right">
+                    <button onclick="checkPrueba1()" class="px-6 py-2 bg-amber-700 hover:bg-amber-600 text-white font-bold font-cinzel rounded transition uppercase">Aprobar Moción</button>
+                </div>
+                <p id="p1-error" class="text-red-400 text-sm mt-3 hidden text-right">Los senadores murmuran en tu contra (-50 pts). Revisa la ortografía.</p>
+            </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            <div class="lg:col-span-8">
-                <div class="bg-white rounded-[4rem] shadow-2xl border border-stone-100 p-10 md:p-24 min-h-[700px] dark:bg-stone-900 dark:border-stone-800 relative">
-                    <div id="latin-container" class="greek-display text-3xl md:text-5xl leading-[2.6] text-justify dark:text-stone-200"></div>
+            <!-- ÑEHA'Ã 2 -->
+            <div id="prueba2" class="bg-black/60 border border-red-900/50 p-6 rounded-lg shadow-lg relative overflow-hidden transition-all duration-500 opacity-50 pointer-events-none">
+                <div class="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
+                <h3 class="text-2xl text-emerald-500 mb-4 flex items-center gap-2 font-cinzel">
+                    <span class="bg-emerald-900/50 p-2 rounded text-emerald-300 border border-emerald-700 text-sm">II</span> La Voz del Cónsul (Traducción)
+                </h3>
+                <p class="mb-6 text-slate-300">Cicerón ha hablado rápido y furioso. Seleccionad la traducción exacta de sus famosas acusaciones.</p>
+                
+                <div class="space-y-6">
+                    <div class="bg-red-950/30 p-4 rounded border border-red-900/50">
+                        <p class="font-cinzel text-amber-200 mb-3 text-lg">"Quousque tandem abutere, Catilina, patientia nostra?"</p>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input type="radio" name="t1" value="a" class="w-4 h-4 text-emerald-500 bg-slate-800 border-slate-600">
+                                <span class="group-hover:text-emerald-300 transition text-sm">a) ¿Hasta cuándo abusarás, Catilina, de nuestra paciencia?</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input type="radio" name="t1" value="b" class="w-4 h-4 text-emerald-500 bg-slate-800 border-slate-600">
+                                <span class="group-hover:text-emerald-300 transition text-sm">b) ¿Hasta que abusaste, Catilina, con tu paciencia?</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input type="radio" name="t1" value="c" class="w-4 h-4 text-emerald-500 bg-slate-800 border-slate-600">
+                                <span class="group-hover:text-emerald-300 transition text-sm">c) ¿Cómo es que abusas, Catilina, de nosotros?</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="bg-red-950/30 p-4 rounded border border-red-900/50">
+                        <p class="font-cinzel text-amber-200 mb-3 text-lg">"Patere tua consilia non sentis?"</p>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input type="radio" name="t2" value="a" class="w-4 h-4 text-emerald-500 bg-slate-800 border-slate-600">
+                                <span class="group-hover:text-emerald-300 transition text-sm">a) ¿Tus consejos no se sienten?</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input type="radio" name="t2" value="b" class="w-4 h-4 text-emerald-500 bg-slate-800 border-slate-600">
+                                <span class="group-hover:text-emerald-300 transition text-sm">b) ¿No sientes que tus planes están al descubierto?</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input type="radio" name="t2" value="c" class="w-4 h-4 text-emerald-500 bg-slate-800 border-slate-600">
+                                <span class="group-hover:text-emerald-300 transition text-sm">c) ¿No sientes a los padres en tus asambleas?</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="bg-red-950/30 p-4 rounded border border-red-900/50">
+                        <p class="font-cinzel text-amber-200 mb-3 text-lg">"O tempora, o mores!"</p>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input type="radio" name="t3" value="a" class="w-4 h-4 text-emerald-500 bg-slate-800 border-slate-600">
+                                <span class="group-hover:text-emerald-300 transition text-sm">a) ¡Oh tiempos, oh costumbres!</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input type="radio" name="t3" value="b" class="w-4 h-4 text-emerald-500 bg-slate-800 border-slate-600">
+                                <span class="group-hover:text-emerald-300 transition text-sm">b) ¡Tiempos de muerte!</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input type="radio" name="t3" value="c" class="w-4 h-4 text-emerald-500 bg-slate-800 border-slate-600">
+                                <span class="group-hover:text-emerald-300 transition text-sm">c) ¡Oh temporal, oh retraso!</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Kuatia Ñembohasa Paite -->
+                    <div class="bg-red-950/30 p-4 rounded border border-red-900/50 mt-4">
+                        <label for="fullTranslation" class="font-cinzel text-emerald-400 mb-3 text-lg block flex items-center gap-2">
+                            <i data-lucide="pen-tool" class="w-5 h-5"></i>
+                            Traducción Completa del Pergamino
+                        </label>
+                        <p class="text-sm text-slate-400 mb-3">Redactad aquí la versión final en español de todo el texto. Es requisito indispensable para emitir la condena.</p>
+                        <textarea id="fullTranslation" class="w-full h-32 p-4 bg-black/50 border border-emerald-900/50 text-slate-200 rounded focus:border-emerald-500 focus:outline-none transition font-serif" placeholder="¿Hasta cuándo abusarás..."></textarea>
+                    </div>
+
+                </div>
+                <div class="mt-6 text-right">
+                    <button onclick="checkPrueba2()" class="px-6 py-2 bg-emerald-700 hover:bg-emerald-600 text-white font-bold font-cinzel rounded transition uppercase">Validar Condena</button>
+                </div>
+                <p id="p2-error" class="text-red-400 text-sm mt-3 hidden text-right">La traducción es imprecisa (-50 pts). Revisa el test y asegúrate de redactar el texto completo.</p>
+            </div>
+
+            <!-- ÑEHA'Ã 3 -->
+            <div id="prueba3" class="bg-black/60 border border-red-900/50 p-6 rounded-lg shadow-lg relative overflow-hidden transition-all duration-500 opacity-50 pointer-events-none">
+                <div class="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
+                <h3 class="text-2xl text-red-500 mb-4 flex items-center gap-2 font-cinzel">
+                    <span class="bg-red-900/50 p-2 rounded text-red-300 border border-red-700 text-sm">III</span> El Código del Senadoconsulto
+                </h3>
+                <p class="mb-6 text-slate-300">Las puertas del templo están selladas por la guardia. Resolved los <span class="text-red-400 font-bold">cinco enigmas</span> finales para obtener el salvoconducto de 5 dígitos y detener la conjura.</p>
+                
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
+                    <!-- Lock 1 -->
+                    <div class="bg-red-950/20 p-3 rounded text-center border border-red-900/50 flex flex-col items-center justify-between">
+                        <p class="text-[10px] md:text-xs text-slate-400 mb-3">Nº de verbos en <strong>infinitivo</strong> en todo el texto.</p>
+                        <input type="number" id="lock1" min="0" max="9" class="candado-input mt-auto">
+                    </div>
+                    <!-- Lock 2 -->
+                    <div class="bg-red-950/20 p-3 rounded text-center border border-red-900/50 flex flex-col items-center justify-between">
+                        <p class="text-[10px] md:text-xs text-slate-400 mb-3">Declinación (Nº) del sustantivo <strong>tempora</strong>.</p>
+                        <input type="number" id="lock2" min="1" max="5" class="candado-input mt-auto">
+                    </div>
+                    <!-- Lock 3 -->
+                    <div class="bg-red-950/20 p-3 rounded text-center border border-red-900/50 flex flex-col items-center justify-between">
+                        <p class="text-[10px] md:text-xs text-slate-400 mb-3">Orden tradicional (1 a 6). Caso del nombre <strong>Catilina</strong>.</p>
+                        <input type="number" id="lock3" min="1" max="6" class="candado-input mt-auto">
+                    </div>
+                    <!-- Lock 4 -->
+                    <div class="bg-red-950/20 p-3 rounded text-center border border-red-900/50 flex flex-col items-center justify-between">
+                        <p class="text-[10px] md:text-xs text-slate-400 mb-3">¿A qué género pertenece? <br>(1:Épica, 2:Teatro, 3:Oratoria, 4:Epístola)</p>
+                        <input type="number" id="lock4" min="1" max="5" class="candado-input mt-auto">
+                    </div>
+                    <!-- Lock 5 -->
+                    <div class="bg-red-950/20 p-3 rounded text-center border border-red-900/50 flex flex-col items-center justify-between">
+                        <p class="text-[10px] md:text-xs text-slate-400 mb-3">Conjugación (Nº) del verbo <strong>vides, videt</strong>.</p>
+                        <input type="number" id="lock5" min="1" max="4" class="candado-input mt-auto">
+                    </div>
+                </div>
+
+                <div class="mt-4 text-center w-full">
+                    <button onclick="checkPrueba3()" class="w-full py-4 bg-gradient-to-r from-red-900 to-red-700 hover:from-red-800 hover:to-red-600 text-white font-cinzel font-bold text-xl rounded transition shadow-lg shadow-red-900/50 border border-red-500/50 uppercase tracking-widest">
+                        Promulgar Senadoconsulto
+                    </button>
+                    <p id="p3-error" class="text-red-400 text-sm mt-3 hidden">El guardia no reconoce el código (-50 pts). La combinación de 5 dígitos es incorrecta.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- OIKÓVA Paha (Victory Stage) -->
+    <div id="victoryStage" class="w-full max-w-3xl flex flex-col items-center text-center mt-12 space-y-4 hidden-stage">
+        <h1 class="text-5xl md:text-6xl font-cinzel text-amber-500 text-shadow-sm mb-2">¡Roma se ha salvado!</h1>
+        <div class="text-8xl mb-2">🏛️🦅</div>
+        <p class="text-xl md:text-2xl text-slate-300 leading-relaxed max-w-2xl mb-4">
+            Catilina ha huido de la ciudad gracias a vuestra rapidez. La República ha sobrevivido un día más gracias a vuestro dominio de la lengua de sus padres.
+        </p>
+        
+        <p class="mt-4 text-amber-500 font-cinzel font-bold text-xl uppercase tracking-widest bg-amber-950/50 p-4 rounded-lg border border-amber-900">Tu resultado ha sido registrado y no puede modificarse. Ya puedes cerrar esta pestaña.</p>
+
+        <!-- Senado Kuatia -->
+        <div class="bg-black/80 p-6 md:p-8 rounded-lg border border-amber-500/50 mt-4 w-full max-w-xl shadow-[0_0_30px_rgba(217,119,6,0.2)] relative">
+            <div id="formStatus" class="absolute top-2 right-2 flex items-center gap-1 bg-slate-900 px-3 py-1 rounded-full border border-slate-700">
+                <div class="w-2 h-2 rounded-full bg-amber-500 animate-pulse" id="statusDot"></div>
+                <span class="text-[10px] text-slate-400 uppercase tracking-widest" id="statusText">Enviando email al Cónsul...</span>
+            </div>
+
+            <h3 class="text-2xl font-cinzel text-amber-500 mb-4 border-b border-amber-500/30 pb-3 uppercase tracking-widest mt-4">Acta de la República</h3>
+            
+            <p class="text-slate-300 mb-6 text-lg">Senadores Recompensados: <span id="finalTeamName" class="text-amber-400 font-bold font-cinzel text-xl ml-2"></span></p>
+            
+            <div class="grid grid-cols-2 gap-4 my-6 bg-red-950/30 p-4 rounded border border-red-900/50 shadow-inner">
+                <div class="flex flex-col items-center justify-center p-2">
+                    <p class="text-xs text-slate-400 uppercase tracking-widest mb-1 text-center">Tiempo Sobrante</p>
+                    <p id="finalTime" class="text-3xl text-emerald-400 font-bold font-cinzel"></p>
+                </div>
+                <div class="flex flex-col items-center justify-center p-2 border-l border-red-900/50">
+                    <p class="text-xs text-slate-400 uppercase tracking-widest mb-1 text-center">Intentos Fallidos</p>
+                    <p id="finalMistakes" class="text-3xl text-red-400 font-bold font-cinzel"></p>
                 </div>
             </div>
             
-            <div class="lg:col-span-4 space-y-8 sticky top-40 h-fit">
-                <div class="bg-stone-900 text-white p-10 rounded-[3rem] shadow-2xl border border-white/5">
-                    <h3 class="ancient text-gold text-[10px] uppercase font-bold mb-10 border-b border-white/10 pb-4 flex justify-between tracking-widest"><span>Audio Sync</span><div class="flex gap-3 items-center"><button onclick="changeSpeed(-0.1)">-</button><span id="speed-label" class="text-stone-400 font-mono">0.8x</span><button onclick="changeSpeed(0.1)">+</button></div></h3>
-                    <div class="progress-container mb-10 bg-white/10 h-1.5 rounded-full overflow-hidden"><div id="progress-fill" class="progress-bar"></div></div>
-                    <button onclick="toggleAudio()" class="w-full py-6 bg-white text-stone-900 rounded-3xl ancient font-black text-sm hover:bg-gold transition-all flex items-center justify-center gap-3 mb-6 shadow-2xl"><i data-lucide="play" id="play-icon"></i> <span id="btn-text">AUDIRE</span></button>
-                    
-                    <div class="space-y-3 mt-8 pt-6 border-t border-white/10">
-                        <button onclick="generateExercise()" class="w-full py-4 bg-red-900 text-white rounded-2xl ancient text-[10px] shadow-xl uppercase tracking-widest hover:bg-red-800 flex items-center justify-center gap-2"><i data-lucide="brain-circuit" class="w-4 h-4"></i> Reto Magistral</button>
-                    </div>
+            <div class="bg-amber-900/40 p-6 rounded border border-amber-500/50 mb-4 relative overflow-hidden">
+                <div class="absolute -right-4 -top-4 opacity-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                 </div>
-                <div id="exercise-area" class="hidden bg-white p-10 rounded-[3.5rem] border border-stone-100 shadow-2xl dark:bg-stone-800 dark:border-stone-700 animate-in zoom-in-95"></div>
+                <p class="text-sm text-amber-200 uppercase tracking-widest mb-2">Puntuación Final</p>
+                <p id="finalScore" class="text-5xl text-amber-400 font-bold font-cinzel drop-shadow-[0_0_10px_rgba(251,191,36,0.8)]"></p>
             </div>
-        </div>
-    </main>
-
-    <div id="note-modal" class="fixed inset-0 bg-black/80 z-[300] hidden items-center justify-center p-6 fade-in">
-        <div class="bg-white dark:bg-stone-900 p-10 rounded-[3rem] w-full max-w-lg shadow-2xl relative">
-            <button onclick="closeNoteModal()" class="absolute top-6 right-6 text-stone-400 hover:text-red-800"><i data-lucide="x"></i></button>
-            <h3 class="ancient text-xl text-red-800 dark:text-red-500 font-bold mb-6 uppercase">Añadir Nota al Códice</h3>
-            <textarea id="note-input" class="w-full h-32 p-4 rounded-xl border bg-stone-50 dark:bg-stone-950 dark:border-stone-800 font-serif text-sm mb-4" placeholder="Escribe tu reflexión, apunte gramatical o traducción personal..."></textarea>
-            <button onclick="saveNote()" class="w-full py-4 bg-stone-900 text-white rounded-xl ancient font-bold uppercase tracking-widest hover:bg-gold transition-all text-xs">Guardar Nota</button>
+            
         </div>
     </div>
 
-    <div id="sidebar" class="fixed inset-y-0 left-0 w-full md:w-[500px] bg-white shadow-2xl -translate-x-full drawer p-12 overflow-y-auto no-print dark:bg-stone-900 border-r dark:border-stone-800">
-        <div class="flex justify-between items-center mb-10 border-b pb-6">
-            <h2 class="ancient text-2xl font-black dark:text-white uppercase tracking-tighter">BIBLIOTHECA</h2>
-            <button onclick="toggleSidebar(false)" class="p-3 bg-red-50 text-red-800 dark:bg-red-900/20 rounded-full hover:bg-red-800 hover:text-white transition-all"><i data-lucide="x" class="w-6 h-6"></i></button>
-        </div>
-        <div id="author-list" class="space-y-12"></div>
+    <!-- OIKÓVA Vai (Defeat Stage) -->
+    <div id="defeatStage" class="w-full max-w-3xl flex flex-col items-center text-center mt-20 space-y-6 hidden-stage">
+        <h1 class="text-5xl md:text-6xl font-cinzel text-red-600 text-shadow-sm mb-4">Roma Arde en Llamas</h1>
+        <div class="text-8xl mb-4">🔥</div>
+        <p class="text-xl md:text-2xl text-slate-300 leading-relaxed max-w-2xl">
+            El tiempo se ha agotado. Las tropas de Catilina han tomado el Foro y Cicerón ha sido asesinado. El fracaso de vuestra misión ha condenado a la República.
+        </p>
+        <p class="mt-8 text-red-500 font-cinzel font-bold text-xl uppercase tracking-widest bg-red-950/50 p-4 rounded-lg border border-red-900">La Historia no concede segundas oportunidades.</p>
+        <p class="text-slate-400 mt-2 text-sm italic" id="defeatStatusText">Notificando resultado al Cónsul...</p>
     </div>
 
-    <div id="codex-drawer" class="fixed inset-y-0 left-0 w-full md:w-[500px] bg-stone-900 text-white shadow-2xl -translate-x-full drawer p-12 overflow-y-auto no-print border-r border-stone-800">
-        <div class="flex justify-between items-center mb-10 border-b border-stone-700 pb-8 uppercase font-black tracking-widest text-gold">
-            <h2 class="ancient text-3xl">El Códice</h2>
-            <button onclick="toggleCodex(false)" class="p-2 hover:bg-stone-800 rounded-full"><i data-lucide="x"></i></button>
-        </div>
-        <p class="text-xs font-serif text-stone-400 mb-8 italic">Tus lecturas pendientes, favoritos y notas personales. Guardado localmente.</p>
-        <div id="codex-list" class="space-y-6"></div>
-    </div>
-
-    <div id="vocab-drawer" class="fixed inset-y-0 right-0 w-full md:w-[500px] bg-white shadow-2xl translate-x-full drawer p-12 overflow-y-auto border-l dark:bg-stone-900 dark:border-stone-800 no-print">
-        <div class="flex justify-between items-center mb-10 border-b pb-6 text-terracotta">
-            <h2 class="ancient text-2xl font-black uppercase tracking-tighter">Vocabularium</h2>
-            <button onclick="toggleVocab(false)" class="p-2 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-full"><i data-lucide="x"></i></button>
-        </div>
-        <p class="text-xs font-serif text-stone-500 dark:text-stone-400 mb-8 italic">Tus palabras guardadas desde el Oraculum.</p>
-        <div id="vocab-list" class="space-y-4"></div>
-    </div>
-
-    <div id="oracle-drawer" class="fixed inset-y-0 right-0 w-full md:w-[850px] bg-white shadow-2xl translate-x-full drawer p-12 overflow-y-auto border-l dark:bg-stone-900 dark:border-stone-800 no-print">
-        <button onclick="closeOracle()" class="mb-12 text-stone-400 hover:text-red-800 flex items-center gap-4 ancient text-[11px] uppercase transition-all tracking-widest font-black"><i data-lucide="arrow-left" class="w-4 h-4"></i> REGRESARE</button>
+    <!-- Oikuaapáva (Oracle Drawer) -->
+    <div id="oracle-drawer" class="fixed inset-y-0 right-0 w-full md:w-[650px] bg-slate-900 shadow-2xl translate-x-full drawer p-8 md:p-12 overflow-y-auto border-l border-red-900 no-print text-slate-200">
+        <button onclick="closeOracle()" class="mb-12 text-slate-400 hover:text-amber-500 flex items-center gap-4 font-cinzel text-sm uppercase transition-all tracking-widest font-black"><i data-lucide="arrow-right" class="w-4 h-4"></i> Regresar</button>
         <div id="oracle-content"></div>
     </div>
 
-    <div id="legal-drawer" class="fixed inset-y-0 right-0 w-full md:w-[850px] bg-white shadow-2xl translate-x-full drawer p-16 overflow-y-auto border-l dark:bg-stone-900">
-        <h2 class="ancient text-4xl font-black mb-12 border-b pb-8 text-red-800 uppercase dark:text-red-500">Aviso Legal / Legal Notice</h2>
-        <div class="space-y-8 font-serif text-sm dark:text-stone-400 leading-relaxed text-justify">
-            <div class="legal-sect border-red-800 pl-6 border-l-4">
-                <span class="lang-tag bg-es mb-4">ES</span>
-                <p><b>Términos de Uso:</b> Latinitatis PRO es un Entorno Personal de Aprendizaje (PLE) de código abierto y sin fines de lucro. Todo el código fuente y el diseño estructural son propiedad del autor. Los textos clásicos incluidos pertenecen al dominio público. El análisis morfosintáctico generado por Inteligencia Artificial es experimental y se ofrece estrictamente con fines educativos, sin garantía de infalibilidad académica.</p>
-            </div>
-        </div>
-        <button onclick="toggleLegal(false)" class="mt-12 ancient text-[10px] underline dark:text-stone-500 uppercase font-black">Cerrar / Close</button>
-    </div>
-
-    <div id="privacy-drawer" class="fixed inset-y-0 right-0 w-full md:w-[850px] bg-white shadow-2xl translate-x-full drawer p-16 overflow-y-auto border-l dark:bg-stone-900">
-        <h2 class="ancient text-4xl font-black mb-12 border-b pb-8 text-red-800 uppercase dark:text-red-500">Privacidad / Privacy</h2>
-        <div class="space-y-8 font-serif text-sm dark:text-stone-400 leading-relaxed text-justify">
-            <div class="legal-sect border-red-800 pl-6 border-l-4">
-                <span class="lang-tag bg-es mb-4">ES</span>
-                <p><b>Protección de Datos:</b> En cumplimiento de las normativas vigentes, Latinitatis PRO garantiza el anonimato absoluto. Esta plataforma NO utiliza cookies de seguimiento, NO recopila datos personales, NO requiere registro de cuentas y NO envía información a servidores externos. Tu Clave API, tu historial de lectura, tu vocabulario y tus notas personales se almacenan de forma local y exclusiva en el <i>LocalStorage</i> de tu navegador.</p>
-            </div>
-        </div>
-        <button onclick="togglePrivacy(false)" class="mt-12 ancient text-[10px] underline dark:text-stone-500 uppercase font-black">Cerrar / Close</button>
-    </div>
-
-    <!-- EL TEXTO LATINO INTEGRADO DIRECTAMENTE -->
+    <!-- JS Rembiapo -->
     <script>
-        const canon = [
-            {
-                author: "Plinius Minor",
-                works: [
-                    {
-                        title: "De Phantasmate Athenodori",
-                        title_es: "La casa encantada de Atenas",
-                        meta: "Epistulae, VII, 27",
-                        content: "Erat Athenis magna domus, sed infamis. Per silentium noctis sonus ferri et strepitus vinculorum audiebantur. Mox apparebat idolum, senex macie confectus. Cum philosophus Athenodorus domum conduxisset, in tenebris vigilabat. Subito phantasma advenit et digito signum dedit. In area domus, monstro evanescente, Athenodorus ossa vincta catenis invenit."
-                    }
-                ]
-            }
-        ];
+        // Umi mba'e ojejapóva (Variables de estado)
+        let timerInterval;
+        let timeRemaining = 45 * 60; 
+        
+        let teamName = "";
+        let mistakes = 0;
+        const BASE_SCORE = 3000; 
 
-        let synth = window.speechSynthesis, utterance = null, readingRate = 0.8, isReading = false, currentWork = null, isDarkMode = false;
-        
-        function toggleDarkMode() { isDarkMode = !isDarkMode; document.body.classList.toggle('dark-mode', isDarkMode); document.getElementById('theme-icon').setAttribute('data-lucide', isDarkMode ? 'sun' : 'moon'); lucide.createIcons(); }
-        
-        // Busca una voz en latín, y si no, usa italiano o español como aproximación fonética clásica.
-        function getBestLatinVoice() { 
-            const v = synth.getVoices(); 
-            return v.find(x => x.lang.includes('la')) || v.find(x => x.lang.includes('it-IT')) || v.find(x => x.lang.includes('es-ES')) || v[0]; 
+        // Kuatia Ñe'ẽ (Texto Latino - Primera Catilinaria)
+        const latinText = "Quousque tandem abutere, Catilina, patientia nostra? Quamdiu etiam furor iste tuus nos eludet? Nihilne te nocturnum praesidium Palatii, nihil timor populi, nihil horum ora vultusque moverunt? Patere tua consilia non sentis? Constrictam teneri coniurationem tuam non vides? O tempora, o mores! Senatus haec intellegit, consul videt; hic tamen vivit. Vivit? Immo vero etiam in senatum venit.";
+
+        // Ñepyrũ Ñembotavy'ỹre (Inicialización Anti-Trampas)
+        window.onload = function() {
+            lucide.createIcons();
+            
+            // Omoingéva kuatiañe'ẽ HTML-pe
+            const container = document.getElementById('latin-container');
+            container.innerHTML = latinText.split(/\s+/).map((word, i) => {
+                const cleanWord = word.replace(/[.,;:!?]/g, '');
+                return `<span class="word-token" onclick="analyze('${cleanWord}')">${word}</span>`;
+            }).join(' ');
+
+            checkGameState();
+        };
+
+        function checkGameState() {
+            const status = localStorage.getItem('catilina_status'); // Changed variable names to prevent collision with previous game
+            if (status === 'won') {
+                teamName = localStorage.getItem('catilina_team') || "Senador";
+                document.getElementById('finalTeamName').innerText = teamName;
+                document.getElementById('finalTime').innerText = localStorage.getItem('catilina_timeStr') || "00:00";
+                document.getElementById('finalMistakes').innerText = localStorage.getItem('catilina_mistakes') || "0";
+                document.getElementById('finalScore').innerText = localStorage.getItem('catilina_score') || "0 pts";
+                hide('introStage');
+                show('victoryStage');
+                document.getElementById('formStatus').style.display = 'none'; 
+            } else if (status === 'lost') {
+                hide('introStage');
+                show('defeatStage');
+                document.getElementById('defeatStatusText').style.display = 'none';
+            } else if (status === 'playing') {
+                const endTime = parseInt(localStorage.getItem('catilina_endTime'));
+                teamName = localStorage.getItem('catilina_team');
+                mistakes = parseInt(localStorage.getItem('catilina_mistakes')) || 0;
+                
+                const now = Date.now();
+                if (now >= endTime) {
+                    gameOver();
+                } else {
+                    timeRemaining = Math.floor((endTime - now) / 1000);
+                    resumeGame();
+                }
+            }
         }
 
-        window.onload = () => { lucide.createIcons(); renderLibrary(); loadCodex(); loadVocab(); synth.getVoices(); };
+        function show(id) { document.getElementById(id).classList.remove('hidden-stage'); }
+        function hide(id) { document.getElementById(id).classList.add('hidden-stage'); }
+        
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
 
+        // ==========================================
+        // LATINITATIS PRO: ORACULUM API Y RETOS
+        // ==========================================
         function promptForKey() {
-            let k = prompt("🏛️ Clavis API (Obtenga una gratis en console.groq.com):");
-            if(k) { localStorage.setItem('groq_key', k.trim()); alert("Clavis Guardada en LocalStorage."); }
+            let k = prompt("🏛️ Clavis API ( console.groq.com ):");
+            if(k) { localStorage.setItem('groq_key', k.trim()); alert("Clavis Guardada."); }
         }
 
         async function callAI(p, isExercise = false) {
             let k = localStorage.getItem('groq_key'); 
-            if (!k) { promptForKey(); k = localStorage.getItem('groq_key'); if(!k) throw new Error("API Key Required."); }
+            if (!k) { promptForKey(); k = localStorage.getItem('groq_key'); if(!k) throw new Error("Requiere API Key."); }
             
             let sysPrompt = isExercise 
                 ? "You are an Expert Philologist. Create a multiple-choice question in Spanish about the provided Latin text. Respond ONLY in valid JSON: {\"pregunta\":\"...\",\"opciones\":[\"...\",\"...\",\"...\"],\"correcta\":0,\"explicacion\":\"...\"}."
@@ -260,20 +464,70 @@
             const d = await r.json(); if (d.error) throw new Error(d.error.message); return d.choices[0].message.content;
         }
 
+        function openOracle() { document.getElementById('oracle-drawer').classList.remove('translate-x-full'); }
+        function closeOracle() { document.getElementById('oracle-drawer').classList.add('translate-x-full'); }
+
         async function analyze(word) {
-            openOracle(); const c = document.getElementById('oracle-content'); c.innerHTML = "<p class='py-48 text-center animate-pulse ancient text-stone-300 uppercase tracking-widest'>Consultatio Oraculi...</p>";
+            openOracle(); 
+            const c = document.getElementById('oracle-content'); 
+            c.innerHTML = "<p class='py-48 text-center animate-pulse font-cinzel text-amber-400 uppercase tracking-widest'>Consultando al Oráculo...</p>";
             
             const normalizedWord = word.toLowerCase();
+            
+            // ==========================================
+            // DICCIONARIO MANUAL DE PALABRAS (Cicerón)
+            // ==========================================
             const customDict = {
-                'cum': { enunciado: "cum", es: { morph: "Conjunción", syntax: "Cum histórico", def: "como, al...", etym: "Del PIE *kʷom", exp: "El 'cum histórico' o narrativo rige subjuntivo en tiempos del pasado (imperfecto o pluscuamperfecto). Sirve para enmarcar las circunstancias de la acción principal."} },
-                'monstro': { enunciado: "monstrum, -i, n", es: { morph: "Sustantivo, Neutro, Singular", syntax: "Ablativo Absoluto", def: "monstruo, prodigio", etym: "Del latín monēre", exp: "Junto al participio 'evanescente' forma un ablativo absoluto: una construcción sintácticamente independiente que suele equivaler a una oración subordinada adverbial."} },
-                'evanescente': { enunciado: "evanescens, -entis", es: { morph: "Participio de presente, activo, Neutro, Singular", syntax: "Ablativo Absoluto", def: "al desaparecer, desvaneciéndose", etym: "De ex- + vanus", exp: "Participio en ablativo que concuerda con 'monstro' para formar la estructura de ablativo absoluto."} },
-                'ossa': { enunciado: "os, ossis, n", es: { morph: "Sustantivo, Neutro, Plural", syntax: "Acusativo, C. Directo", def: "huesos", etym: "Del PIE *h₃est-", exp: "Núcleo del complemento directo del verbo 'invenit', modificado por el participio concertado 'vincta'."} },
-                'vincta': { enunciado: "vinctus, -a, -um", es: { morph: "Participio de perfecto, pasivo, Neutro, Plural", syntax: "Participio Concertado", def: "atados", etym: "Del verbo vincīre (atar)", exp: "Participio concertado. Concuerda en género, número y caso (acusativo neutro plural) con el sustantivo al que complementa ('ossa')."} },
-                'senex': { enunciado: "senex, senis, m", es: { morph: "Sustantivo, Masculino, Singular", syntax: "Nominativo, Aposición", def: "anciano", etym: "Del PIE *sen- (viejo)", exp: "Se encuentra en aposición al sujeto 'idolum'. A su vez, es el núcleo modificado por el participio concertado 'confectus'."} },
-                'confectus': { enunciado: "confectus, -a, -um", es: { morph: "Participio de perfecto, pasivo, Masculino, Singular", syntax: "Participio Concertado", def: "consumido, deshecho", etym: "De conficere", exp: "Participio concertado que concuerda en género, número y caso (nominativo masculino singular) con 'senex'."} },
-                'audiebantur': { enunciado: "audio, -ire", es: { morph: "Verbo, 3ª persona plural, Pretérito Imperfecto Ind., Voz Pasiva", syntax: "Núcleo del predicado", def: "se oían, eran oídos", etym: "Del PIE *h₂ew- (percibir)", exp: "Está en 3ª persona del plural pasivo para concordar con los dos núcleos del sujeto ('sonus' y 'strepitus')."} },
-                'catenis': { enunciado: "catena, -ae, f", es: { morph: "Sustantivo, Femenino, Plural", syntax: "Ablativo Instrumental", def: "con cadenas", etym: "Posible origen etrusco o PIE *kat-", exp: "Ablativo sin preposición que señala el instrumento o medio con el cual se realiza la acción de estar atados ('vincta')."} }
+                'quousque': { enunciado: "quousque", es: { morph: "Adverbio interrogativo", syntax: "Complemento Circunstancial de Tiempo", def: "¿hasta cuándo?", etym: "De quo + usque"} },
+                'tandem': { enunciado: "tandem", es: { morph: "Adverbio", syntax: "Adverbio enfático", def: "de una vez, por fin", etym: "Del latín arcaico tam + dem"} },
+                'abutere': { enunciado: "abutor, -uti, abusus sum", es: { morph: "Verbo deponente, 2ª persona singular, Futuro Imperfecto Ind.", syntax: "Núcleo del Predicado", def: "abusarás", exp: "Los verbos deponentes tienen forma pasiva pero significado activo. 'Abutor' rige siempre caso ablativo (en este caso, 'patientia'). Notar la desinencia alternativa '-re' para la 2ª persona del singular de pasiva, en lugar de '-ris'.", etym: "De ab- + utor (usar)"} },
+                'catilina': { enunciado: "Catilina, -ae, m", es: { morph: "Sustantivo, Masculino, Singular", syntax: "Vocativo", def: "Catilina", exp: "Aunque de la 1ª declinación, designa a un varón (Lucio Sergio Catilina), líder de la conjura.", etym: "Cognomen romano"} },
+                'patientia': { enunciado: "patientia, -ae, f", es: { morph: "Sustantivo, Femenino, Singular", syntax: "Ablativo de Régimen (Suplemento)", def: "de la paciencia", exp: "Régimen obligatorio exigido por el verbo 'abutere'.", etym: "De patiens (que soporta)"} },
+                'nostra': { enunciado: "noster, nostra, nostrum", es: { morph: "Adjetivo Posesivo, Femenino, Singular", syntax: "Ablativo, Adyacente de 'patientia'", def: "nuestra", etym: "Del PIE *nos- (nosotros)"} },
+                'quamdiu': { enunciado: "quamdiu", es: { morph: "Adverbio", syntax: "C. Circunstancial de Tiempo", def: "¿durante cuánto tiempo?", etym: "De quam + diu"} },
+                'etiam': { enunciado: "etiam", es: { morph: "Adverbio", syntax: "Adverbio enfático", def: "todavía, además", etym: "De et + iam"} },
+                'furor': { enunciado: "furor, -oris, m", es: { morph: "Sustantivo, Masculino, Singular", syntax: "Nominativo, Sujeto", def: "el furor, la locura", etym: "Del verbo furere"} },
+                'iste': { enunciado: "iste, ista, istud", es: { morph: "Adjetivo Demostrativo, Masculino, Singular", syntax: "Nominativo, Adyacente de 'furor'", def: "ese", exp: "Cicerón usa 'iste' frecuentemente con un matiz despectivo.", etym: "Del latín antiguo is + te"} },
+                'tuus': { enunciado: "tuus, -a, -um", es: { morph: "Adjetivo Posesivo, Masculino, Singular", syntax: "Nominativo, Adyacente de 'furor'", def: "tu", etym: "Del PIE *tew-"} },
+                'nos': { enunciado: "nos, nostrum", es: { morph: "Pronombre Personal, 1ª persona plural", syntax: "Acusativo, Complemento Directo", def: "a nosotros", etym: "Del PIE *nos-"} },
+                'eludet': { enunciado: "eludo, -ere", es: { morph: "Verbo, 3ª persona singular, Futuro Imperfecto Ind., Activo", syntax: "Núcleo del Predicado", def: "burlará, esquivará", etym: "De ex- + ludo (jugar)"} },
+                'nihilne': { enunciado: "nihil (n) + -ne (enclítica)", es: { morph: "Pronombre indefinido + partícula interrogativa", syntax: "Acusativo, Complemento Circunstancial (Adverbializado)", def: "¿acaso nada...?", exp: "Se usa como acusativo de relación/extensión, equivalente a un adverbio 'en nada', 'acaso no'. La partícula enclítica '-ne' introduce una pregunta.", etym: "De ne- + hilum"} },
+                'te': { enunciado: "tu, tui", es: { morph: "Pronombre Personal, 2ª persona singular", syntax: "Acusativo, Complemento Directo", def: "a ti", etym: "Del PIE *tu"} },
+                'nocturnum': { enunciado: "nocturnus, -a, -um", es: { morph: "Adjetivo, Neutro, Singular", syntax: "Nominativo, Adyacente de 'praesidium'", def: "nocturno", etym: "De nox, noctis"} },
+                'praesidium': { enunciado: "praesidium, -ii, n", es: { morph: "Sustantivo, Neutro, Singular", syntax: "Nominativo, Sujeto", def: "la guardia, la guarnición", etym: "De praeses (protector)"} },
+                'palatii': { enunciado: "Palatium, -ii, n", es: { morph: "Sustantivo propio, Neutro, Singular", syntax: "Genitivo, Complemento del Nombre", def: "del Palatino", exp: "Colina de Roma donde residían las familias más ricas e influyentes.", etym: "De Pales (diosa de los pastores)"} },
+                'timor': { enunciado: "timor, -oris, m", es: { morph: "Sustantivo, Masculino, Singular", syntax: "Nominativo, Sujeto", def: "el temor, el miedo", etym: "Del verbo timere"} },
+                'populi': { enunciado: "populus, -i, m", es: { morph: "Sustantivo, Masculino, Singular", syntax: "Genitivo, Complemento del Nombre (Subjetivo)", def: "del pueblo", etym: "De origen etrusco"} },
+                'horum': { enunciado: "hic, haec, hoc", es: { morph: "Pronombre/Adjetivo Demostrativo, Masculino, Plural", syntax: "Genitivo, Complemento del Nombre", def: "de estos", exp: "Se refiere a los senadores presentes en la asamblea.", etym: "Del latín temprano"} },
+                'ora': { enunciado: "os, oris, n", es: { morph: "Sustantivo, Neutro, Plural", syntax: "Nominativo, Sujeto", def: "los rostros, las bocas", etym: "Del PIE *h₁oh₃s (boca)"} },
+                'vultusque': { enunciado: "vultus, -us, m + -que", es: { morph: "Sustantivo plural + conjunción enclítica copulativa", syntax: "Nominativo, Sujeto", def: "y las expresiones", etym: "Del PIE *wel- (ver)"} },
+                'moverunt': { enunciado: "moveo, -ere, movi, motum", es: { morph: "Verbo, 3ª persona plural, Pretérito Perfecto Ind., Activo", syntax: "Núcleo del Predicado", def: "movieron, han conmovido", etym: "Del PIE *mew-"} },
+                'patere': { enunciado: "pateo, -ere", es: { morph: "Verbo, Infinitivo Presente Activo", syntax: "Núcleo del Predicado (de Oración de Infinitivo)", def: "estar descubiertos, ser patentes", exp: "Al depender del verbo de entendimiento 'sentis', forma una oración subordinada sustantiva de infinitivo, donde su sujeto ('consilia') va en Acusativo.", etym: "Del PIE *pet- (extenderse)"} },
+                'tua': { enunciado: "tuus, -a, -um", es: { morph: "Adjetivo Posesivo, Neutro, Plural", syntax: "Acusativo, Adyacente de 'consilia'", def: "tus", etym: "Del PIE *tew-"} },
+                'consilia': { enunciado: "consilium, -ii, n", es: { morph: "Sustantivo, Neutro, Plural", syntax: "Acusativo, Sujeto de la Oración de Infinitivo", def: "planes, intenciones", etym: "De consulere"} },
+                'non': { enunciado: "non", es: { morph: "Adverbio", syntax: "C. Circunstancial de Negación", def: "no", etym: "De ne + oenum (ni una sola cosa)"} },
+                'sentis': { enunciado: "sentio, -ire", es: { morph: "Verbo, 2ª persona singular, Presente Ind., Activo", syntax: "Núcleo del Predicado (Oración Principal)", def: "sientes, te das cuenta", etym: "Del PIE *sent- (percibir)"} },
+                'constrictam': { enunciado: "constringo, -ere, constrinxi, constrictum", es: { morph: "Participio de Perfecto Pasivo, Femenino, Singular", syntax: "Acusativo, Atributo/Predicativo de 'coniurationem'", def: "atada, paralizada", etym: "De con- + stringo (atar fuertemente)"} },
+                'teneri': { enunciado: "teneo, -ere", es: { morph: "Verbo, Infinitivo Presente Pasivo", syntax: "Núcleo del Predicado (de Oración de Infinitivo)", def: "ser retenida, estar sujeta", exp: "Infinitivo pasivo dependiente de 'vides'. Su sujeto ('coniurationem') está en acusativo.", etym: "Del PIE *ten- (estirar)"} },
+                'coniurationem': { enunciado: "coniuratio, -onis, f", es: { morph: "Sustantivo, Femenino, Singular", syntax: "Acusativo, Sujeto de la Oración de Infinitivo", def: "la conjuración", etym: "De coniurare (jurar juntos)"} },
+                'tuam': { enunciado: "tuus, -a, -um", es: { morph: "Adjetivo Posesivo, Femenino, Singular", syntax: "Acusativo, Adyacente de 'coniurationem'", def: "tu", etym: "Del PIE *tew-"} },
+                'vides': { enunciado: "video, -ere", es: { morph: "Verbo, 2ª persona singular, Presente Ind., Activo", syntax: "Núcleo del Predicado", def: "ves", etym: "Del PIE *weyd- (ver)"} },
+                'o': { enunciado: "o", es: { morph: "Interjección", syntax: "Interjección exclamativa", def: "¡oh!", etym: "Onomatopeya"} },
+                'tempora': { enunciado: "tempus, -oris, n", es: { morph: "Sustantivo, Neutro, Plural", syntax: "Acusativo de Exclamación (o Vocativo)", def: "tiempos", exp: "Una de las exclamaciones retóricas más famosas de la historia. Pertenece a la 3ª declinación.", etym: "Del PIE *tem- (cortar, sección)"} },
+                'mores': { enunciado: "mos, moris, m", es: { morph: "Sustantivo, Masculino, Plural", syntax: "Acusativo de Exclamación", def: "costumbres", etym: "De origen incierto"} },
+                'senatus': { enunciado: "senatus, -us, m", es: { morph: "Sustantivo, Masculino, Singular", syntax: "Nominativo, Sujeto", def: "el senado", etym: "De senex (viejo, consejo de ancianos)"} },
+                'haec': { enunciado: "hic, haec, hoc", es: { morph: "Pronombre Demostrativo, Neutro, Plural", syntax: "Acusativo, Complemento Directo", def: "estas cosas", etym: "Del latín arcaico"} },
+                'intellegit': { enunciado: "intellego, -ere", es: { morph: "Verbo, 3ª persona singular, Presente Ind., Activo", syntax: "Núcleo del Predicado", def: "comprende, entiende", etym: "De inter- + lego (escoger entre)"} },
+                'consul': { enunciado: "consul, consulis, m", es: { morph: "Sustantivo, Masculino, Singular", syntax: "Nominativo, Sujeto", def: "el cónsul", exp: "Se refiere al propio Cicerón.", etym: "De consulere"} },
+                'videt': { enunciado: "video, -ere", es: { morph: "Verbo, 3ª persona singular, Presente Ind., Activo", syntax: "Núcleo del Predicado", def: "lo ve", etym: "Del PIE *weyd-"} },
+                'hic': { enunciado: "hic, haec, hoc", es: { morph: "Pronombre Demostrativo, Masculino, Singular", syntax: "Nominativo, Sujeto", def: "este (Catilina)", etym: "Del latín arcaico"} },
+                'tamen': { enunciado: "tamen", es: { morph: "Conjunción", syntax: "Conjunción coordinada adversativa", def: "sin embargo, no obstante", etym: "Del PIE *tam"} },
+                'vivit': { enunciado: "vivo, -ere", es: { morph: "Verbo, 3ª persona singular, Presente Ind., Activo", syntax: "Núcleo del Predicado", def: "vive", etym: "Del PIE *gʷeyh₃- (vivir)"} },
+                'immo': { enunciado: "immo", es: { morph: "Adverbio", syntax: "Adverbio correctivo", def: "es más, más aún", exp: "Acompañado de 'vero', corrige intensificando lo que se acaba de decir.", etym: "De origen incierto"} },
+                'vero': { enunciado: "verus, -a, -um", es: { morph: "Adverbio (ablativo adverbializado)", syntax: "Adverbio", def: "en verdad, de hecho", etym: "Del PIE *weh₁-"} },
+                'in': { enunciado: "in", es: { morph: "Preposición", syntax: "Preposición que rige acusativo (en este caso)", def: "al, hacia", etym: "Del PIE *en"} },
+                'senatum': { enunciado: "senatus, -us, m", es: { morph: "Sustantivo, Masculino, Singular", syntax: "Acusativo, C. Circunstancial de Lugar (Dirección)", def: "al senado", etym: "De senex"} },
+                'venit': { enunciado: "venio, -ire", es: { morph: "Verbo, 3ª persona singular, Presente Ind., Activo", syntax: "Núcleo del Predicado", def: "viene", etym: "Del PIE *gʷem- (ir, venir)"} }
             };
 
             try {
@@ -281,155 +535,272 @@
                 if (customDict[normalizedWord]) {
                     res = customDict[normalizedWord];
                 } else {
-                    res = JSON.parse(await callAI(`Analyze Latin word: "${word}" in context of ${currentWork.author}. Be extremely precise with the syntax: identify the case and its syntactic role. Provide the full dictionary lemma in lowercase.`));
+                    res = JSON.parse(await callAI(`Analyze Latin word: "${word}" in context of Cicero's Catilinarians. Be extremely precise with the syntax: identify the case and its syntactic role. Provide the full dictionary lemma in lowercase.`));
                 }
 
                 c.innerHTML = `
-                    <div class="flex justify-between items-center mb-10 border-b pb-6">
-                        <h3 class="greek-display text-7xl font-black dark:text-white tracking-tighter">${word}</h3>
-                        <button onclick="saveWord('${res.enunciado.replace(/'/g, "\\'")}', '${res.es.def.replace(/'/g, "\\'")}')" class="flex items-center gap-2 p-3 bg-red-50 text-red-800 rounded-xl hover:bg-gold hover:text-white transition-all text-[10px] ancient uppercase font-bold"><i data-lucide="bookmark-plus"></i> Guardar Palabra</button>
+                    <div class="mb-10 border-b border-slate-700 pb-6 text-center">
+                        <h3 class="greek-display text-5xl md:text-7xl font-black text-white tracking-tighter mb-4">${word}</h3>
+                        <p class="text-xl font-bold text-amber-500 uppercase tracking-widest font-serif lowercase">${res.enunciado}</p>
                     </div>
-                    <p class="text-xl font-bold text-stone-400 text-center uppercase tracking-widest mb-12 font-serif lowercase">${res.enunciado}</p>
                     
-                    <div class="space-y-16">
-                        <div class="border-l-[6px] border-stone-800 dark:border-gold pl-8">
-                            <span class="lang-tag bg-es mb-6 font-black uppercase">Español</span>
-                            <p class="text-md font-bold uppercase dark:text-stone-300 mb-1">${res.es.morph}</p>
-                            <p class="text-sm font-bold text-terracotta dark:text-red-400 mb-4 uppercase italic">Sintaxis: ${res.es.syntax}</p>
-                            <p class="text-3xl italic font-serif dark:text-white mb-6 leading-tight">"${res.es.def}"</p>
-                            ${res.es.exp ? `<div class="bg-amber-100 dark:bg-amber-900/30 p-4 rounded-xl mb-6 text-amber-900 dark:text-amber-200 text-sm font-serif border border-amber-200 dark:border-amber-800 shadow-sm leading-relaxed"><b>Nota Gramatical:</b><br>${res.es.exp}</div>` : ''}
-                            <div class="bg-stone-100/50 dark:bg-stone-800 p-6 rounded-2xl text-sm italic leading-relaxed text-stone-500 dark:text-stone-400"><b>Etimología (Raíces Indoeuropeas):</b><br>${res.es.etym}</div>
+                    <div class="space-y-6">
+                        <div class="border-l-[6px] border-amber-600 pl-6">
+                            <span class="lang-tag bg-amber-900/40 text-amber-300 mb-4 font-black uppercase">Castellano</span>
+                            <p class="text-sm font-bold uppercase text-slate-300 mb-1">${res.es.morph}</p>
+                            <p class="text-sm font-bold text-emerald-400 mb-4 uppercase italic">Sintaxis: ${res.es.syntax}</p>
+                            <p class="text-2xl italic font-serif text-white mb-6 leading-tight">"${res.es.def}"</p>
+                            ${res.es.exp ? `<div class="bg-red-950/40 p-4 rounded-xl mb-6 text-amber-200 text-sm font-serif border border-red-800/50 shadow-sm leading-relaxed"><b>Nota Gramatical:</b><br>${res.es.exp}</div>` : ''}
+                            <div class="bg-slate-800 p-4 rounded-xl text-sm italic leading-relaxed text-slate-400"><b>Etimología (Raíces PIE):</b><br>${res.es.etym}</div>
                         </div>
                     </div>`;
-                lucide.createIcons();
-            } catch (e) { c.innerHTML = `<p class='p-16 bg-red-50 text-red-800 rounded-3xl font-black ancient uppercase'>Error IA: ${e.message}</p>`; }
-        }
-
-        /* OPCIONES PREMIUM GUARDADO */
-        function saveWord(lemma, def) {
-            let v = JSON.parse(localStorage.getItem('latinitatis_vocab')||'[]');
-            if(!v.some(i => i.lemma === lemma)) { v.push({lemma, def}); localStorage.setItem('latinitatis_vocab', JSON.stringify(v)); loadVocab(); alert("Palabra guardada en tu Vocabularium."); }
-        }
-        function loadVocab() {
-            let v = JSON.parse(localStorage.getItem('latinitatis_vocab')||'[]');
-            document.getElementById('vocab-list').innerHTML = v.length === 0 ? "<p class='italic text-stone-400 text-sm'>No hay palabras guardadas.</p>" : v.map((i, idx) => `<div class="p-4 border rounded-xl dark:border-stone-700 flex justify-between items-center"><div class="font-serif"><p class="text-lg font-bold text-terracotta dark:text-gold">${i.lemma}</p><p class="text-sm dark:text-stone-300">${i.def}</p></div><button onclick="delVocab(${idx})" class="text-stone-400 hover:text-red-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`).join('');
-            lucide.createIcons();
-        }
-        function delVocab(idx) { let v = JSON.parse(localStorage.getItem('latinitatis_vocab')); v.splice(idx,1); localStorage.setItem('latinitatis_vocab', JSON.stringify(v)); loadVocab(); }
-        
-        function openNoteModal() { document.getElementById('note-modal').classList.remove('hidden'); document.getElementById('note-modal').classList.add('flex'); }
-        function closeNoteModal() { document.getElementById('note-modal').classList.add('hidden'); document.getElementById('note-modal').classList.remove('flex'); }
-        function saveNote() {
-            let txt = document.getElementById('note-input').value.trim();
-            if(!txt) return;
-            let s = JSON.parse(localStorage.getItem('latinitatis_codex')||'[]');
-            let idx = s.findIndex(i => i.title===currentWork.title);
-            if(idx === -1) { s.push({author:currentWork.author, title:currentWork.title, ai:currentWork.ai, wi:currentWork.wi, notes: [txt]}); } 
-            else { if(!s[idx].notes) s[idx].notes = []; s[idx].notes.push(txt); }
-            localStorage.setItem('latinitatis_codex', JSON.stringify(s));
-            document.getElementById('note-input').value = ''; closeNoteModal(); loadCodex(); alert("Nota guardada en el Códice.");
-        }
-
-        /* FUNCIONES BÁSICAS Y AUDIO */
-        function toggleAudio() {
-            if (isReading) { synth.cancel(); isReading = false; updatePlayBtn(false); return; }
-            // Para el latín, simplemente limpiamos puntuación extraña para que el motor TTS no tartamudee
-            const clean = currentWork.content.replace(/[^\w\s]/gi, ' ').replace(/\s+/g, ' ').trim();
-            if(!clean) return;
-            utterance = new SpeechSynthesisUtterance(clean); 
-            utterance.voice = getBestLatinVoice();
-            // Asignamos el idioma de la voz elegida (suele ser italiano o español)
-            utterance.lang = utterance.voice ? utterance.voice.lang : 'it-IT'; 
-            utterance.rate = readingRate;
-            
-            let idx = 0; const tokens = document.querySelectorAll('.word-token');
-            utterance.onboundary = (e) => { 
-                if (e.name === 'word') { 
-                    tokens.forEach(t => t.classList.remove('reading-now')); 
-                    const el = document.getElementById(`token-${idx}`); 
-                    if (el) { 
-                        el.classList.add('reading-now'); 
-                        el.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
-                        document.getElementById('progress-fill').style.width = `${((idx+1)/tokens.length)*100}%`; 
-                        idx++; 
-                    } 
-                } 
-            };
-            utterance.onend = () => { isReading = false; updatePlayBtn(false); document.getElementById('progress-fill').style.width = '0%'; };
-            isReading = true; updatePlayBtn(true); synth.speak(utterance);
-        }
-
-        function updatePlayBtn(a) { document.getElementById('btn-text').innerText = a ? "PAUSAM" : "AUDIRE"; document.getElementById('play-icon').setAttribute('data-lucide', a ? 'pause' : 'play'); lucide.createIcons(); }
-        function changeSpeed(d) { readingRate = Math.min(1.5, Math.max(0.4, readingRate + d)); document.getElementById('speed-label').innerText = readingRate.toFixed(1) + 'x'; if(isReading) { synth.cancel(); toggleAudio(); } }
-
-        function renderLibrary() {
-            document.getElementById('author-list').innerHTML = canon.map((a, ai) => {
-                let dispAuthor = a.author;
-                let uniqueTitles = [...new Set(a.works.map(w => w.title))];
-                return `<div class="mb-12"><h3 class="ancient text-red-800 text-[11px] uppercase border-b pb-6 mb-8 font-black tracking-widest dark:text-red-500">${dispAuthor}</h3><div class="space-y-6">` + 
-                    uniqueTitles.map(title => {
-                        let w = a.works.find(work => work.title === title);
-                        let sub = w.title_es ? ` (${w.title_es})` : "";
-                        return `<button onclick="loadWork(${ai}, ${a.works.indexOf(w)})" class="w-full text-left py-5 px-8 rounded-2xl hover:bg-stone-50 dark:hover:bg-stone-800 font-serif text-xl group flex justify-between items-center transition-all dark:text-stone-300"><span>${title}${sub}</span><i data-lucide="chevron-right" class="opacity-0 group-hover:opacity-100"></i></button>`;
-                    }).join('') + `</div></div>`;
-            }).join(''); lucide.createIcons();
-        }
-
-        function loadWork(ai, wi) {
-            currentWork = canon[ai].works[wi]; currentWork.author = canon[ai].author; currentWork.ai = ai; currentWork.wi = wi;
-            document.getElementById('view-title').innerText = currentWork.title; document.getElementById('view-meta').innerText = `${currentWork.author} • ${currentWork.meta}`;
-            document.getElementById('home-view').classList.add('hidden'); document.getElementById('reader-view').classList.remove('hidden'); document.getElementById('exercise-area').classList.add('hidden');
-            const w = currentWork.content.trim().split(/\s+/); 
-            // Genera los tokens asegurándose de quitar puntuación sólo para la búsqueda, no para la visualización
-            document.getElementById('latin-container').innerHTML = w.map((x, i) => `<span class="word-token" id="token-${i}" onclick="analyze('${x.replace(/[.,·;:!?]/g,'')}')">${x}</span>`).join(' ');
-            toggleSidebar(false); synth.cancel(); isReading = false; updatePlayBtn(false); window.scrollTo(0,0); checkIfSavedIcon();
-        }
-
-        function loadExternalText() {
-            const raw = document.getElementById('external-input').value.trim();
-            if(!raw) return alert("Inserte texto primero.");
-            currentWork = { author: "Extraneus", title: "Interpretatio", meta: "Análisis Externo", content: raw };
-            document.getElementById('view-title').innerText = "Interpretatio";
-            document.getElementById('home-view').classList.add('hidden'); document.getElementById('reader-view').classList.remove('hidden');
-            const w = raw.split(/\s+/); 
-            document.getElementById('latin-container').innerHTML = w.map((x, i) => `<span class="word-token" id="token-${i}" onclick="analyze('${x.replace(/[.,·;:!?]/g,'')}')">${x}</span>`).join(' ');
-        }
-
-        function showHome() { synth.cancel(); document.getElementById('home-view').classList.remove('hidden'); document.getElementById('reader-view').classList.add('hidden'); window.scrollTo(0,0); }
-        function toggleSidebar(s) { document.getElementById('sidebar').classList.toggle('-translate-x-full', !s); }
-        function toggleCodex(s) { document.getElementById('codex-drawer').classList.toggle('-translate-x-full', !s); if(s) loadCodex(); }
-        function toggleVocab(s) { document.getElementById('vocab-drawer').classList.toggle('translate-x-full', !s); }
-        function toggleLegal(s) { document.getElementById('legal-drawer').classList.toggle('translate-x-full', !s); }
-        function togglePrivacy(s) { document.getElementById('privacy-drawer').classList.toggle('translate-x-full', !s); }
-        function openOracle() { document.getElementById('oracle-drawer').classList.remove('translate-x-full'); }
-        function closeOracle() { document.getElementById('oracle-drawer').classList.add('translate-x-full'); }
-        
-        function saveToCodex() { 
-            let s = JSON.parse(localStorage.getItem('latinitatis_codex')||'[]'); 
-            let idx = s.findIndex(i => i.title===currentWork.title); 
-            if(idx>=0) { if(confirm("¿Quitar de favoritos?")) s.splice(idx,1); }
-            else s.push({author:currentWork.author, title:currentWork.title, ai:currentWork.ai, wi:currentWork.wi, notes:[]}); 
-            localStorage.setItem('latinitatis_codex', JSON.stringify(s)); 
-            checkIfSavedIcon(); loadCodex();
-        }
-        function loadCodex() { 
-            const s = JSON.parse(localStorage.getItem('latinitatis_codex')||'[]'); 
-            document.getElementById('codex-list').innerHTML = s.length === 0 ? "<p class='italic text-stone-500'>El Códice está vacío.</p>" : s.map((i, idx) => `<div class="bg-stone-800 p-6 rounded-[2rem] border border-stone-700/50 mb-4"><div class="flex justify-between items-center mb-4"><div class="flex flex-col"><p class="ancient text-[9px] text-gold mb-1 uppercase">${i.author}</p><p class="font-serif text-lg text-stone-200">${i.title}</p></div><button onclick="loadWork(${i.ai}, ${i.wi}); toggleCodex(false);" class="p-4 bg-stone-700 text-white rounded-2xl hover:bg-gold transition-all shadow-md"><i data-lucide="book-open" class="w-4 h-4"></i></button></div>${i.notes && i.notes.length > 0 ? `<div class="mt-4 pt-4 border-t border-stone-700 text-xs font-serif text-stone-400 space-y-2"><p class="font-bold text-white uppercase text-[9px] ancient">Tus Notas:</p>${i.notes.map(n=>`<p class="bg-stone-900 p-3 rounded-lg border border-stone-800">"${n}"</p>`).join('')}</div>` : ''}</div>`).join(''); 
-            lucide.createIcons(); 
-        }
-        function checkIfSavedIcon() { 
-            const s = JSON.parse(localStorage.getItem('latinitatis_codex')||'[]'); 
-            document.getElementById('bookmark-icon').classList.toggle('fill-terracotta', s.some(i => i.title === currentWork.title)); 
+            } catch (e) { c.innerHTML = `<p class='p-6 bg-red-900/50 border border-red-500 text-red-200 rounded text-center font-bold'>Error IA: ${e.message}</p>`; }
         }
 
         async function generateExercise() {
-            const area = document.getElementById('exercise-area'); area.classList.remove('hidden'); area.innerHTML = "<p class='animate-pulse text-gold uppercase ancient py-10 tracking-[0.4em] text-center'>Componiendo Reto...</p>";
+            const area = document.getElementById('exercise-area'); 
+            area.classList.remove('hidden'); 
+            area.innerHTML = "<p class='animate-pulse text-amber-500 uppercase font-cinzel text-sm tracking-widest text-center'>Componiendo Reto...</p>";
             try {
-                const ex = JSON.parse(await callAI(`Genera test magistral sobre este fragmento latino: "${currentWork.content.substring(0,180)}".`, true));
-                area.innerHTML = `<h4 class="ancient text-[11px] text-stone-400 mb-6 uppercase border-b pb-4 tracking-widest">Examen Magistral</h4><p class="mb-10 font-serif text-2xl dark:text-stone-100 leading-snug">${ex.pregunta}</p><div class="space-y-4">${ex.opciones.map((o, i) => `<button onclick="checkAns(${i}, ${ex.correcta}, '${ex.explicacion.replace(/'/g, "\\'")}')" class="block w-full text-left p-5 bg-white dark:bg-stone-900 rounded-2xl border transition-all hover:bg-stone-50 dark:hover:bg-stone-800 dark:text-stone-300 text-lg shadow-sm">${o}</button>`).join('')}</div><div id="fb" class="mt-8 text-sm italic font-serif text-stone-500"></div>`;
-            } catch (e) { area.innerHTML = "Error IA."; }
+                const ex = JSON.parse(await callAI(`Genera test magistral sobre este fragmento latino: "${latinText.substring(0,180)}".`, true));
+                area.innerHTML = `
+                    <h4 class="font-cinzel text-[11px] text-slate-400 mb-4 uppercase border-b border-slate-700 pb-2 tracking-widest">Examen Magistral</h4>
+                    <p class="mb-6 font-serif text-lg text-slate-200 leading-snug">${ex.pregunta}</p>
+                    <div class="space-y-3">
+                        ${ex.opciones.map((o, i) => `<button onclick="checkAns(${i}, ${ex.correcta}, '${ex.explicacion.replace(/'/g, "\\'")}')" class="block w-full text-left p-3 bg-black/50 rounded border border-red-900/50 transition-all hover:bg-red-900/40 text-slate-300 text-sm shadow-sm">${o}</button>`).join('')}
+                    </div>
+                    <div id="fb" class="mt-6 text-sm italic font-serif text-slate-400"></div>`;
+            } catch (e) { area.innerHTML = "<p class='text-red-400 text-sm text-center'>Error IA. Comprueba tu Clavis (API Key).</p>"; }
         }
-        function checkAns(i, c, e) { const fb = document.getElementById('fb'); fb.innerHTML = i === c ? `✅ <span class="text-green-600 font-bold uppercase">Sapiens!</span><br><br>${e}` : `❌ <span class="text-red-600 font-black uppercase">Erratum.</span><br><br>${e}`; }
+
+        function checkAns(i, c, e) { 
+            const fb = document.getElementById('fb'); 
+            fb.innerHTML = i === c ? `✅ <span class="text-emerald-400 font-bold uppercase font-cinzel">¡Sapiens!</span><br><br>${e}` : `❌ <span class="text-red-400 font-bold uppercase font-cinzel">Erratum.</span><br><br>${e}`; 
+        }
+
+        // ==========================================
+        // OÑEHA'Ã HA OGUATA HAG̃UA (Escape Room Logic)
+        // ==========================================
+        function startGame() {
+            const nameInput = document.getElementById('teamName').value.trim();
+            if (!nameInput) {
+                document.getElementById('name-error').classList.remove('hidden');
+                const inputField = document.getElementById('teamName');
+                inputField.classList.add('border-red-500');
+                setTimeout(() => inputField.classList.remove('border-red-500'), 1000);
+                return;
+            }
+            
+            teamName = nameInput;
+            mistakes = 0;
+            
+            localStorage.setItem('catilina_status', 'playing');
+            localStorage.setItem('catilina_team', teamName);
+            localStorage.setItem('catilina_mistakes', '0');
+            localStorage.setItem('catilina_endTime', (Date.now() + timeRemaining * 1000).toString());
+            
+            resumeGame();
+        }
+
+        function resumeGame() {
+            hide('introStage');
+            show('gameHeader');
+            show('gameStage');
+            
+            document.getElementById('timerDisplay').innerText = formatTime(timeRemaining);
+            
+            timerInterval = setInterval(() => {
+                // Solo si sigue en juego (protección adicional para evitar que salte derrota si ya ha ganado)
+                if (localStorage.getItem('catilina_status') !== 'playing') return;
+
+                timeRemaining--;
+                document.getElementById('timerDisplay').innerText = formatTime(timeRemaining);
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    gameOver();
+                }
+            }, 1000);
+        }
+
+        function gameOver() {
+            // Protección: Si ya ganaron, no se puede ejecutar la derrota bajo ningún concepto
+            if (localStorage.getItem('catilina_status') === 'won') return;
+
+            localStorage.setItem('catilina_status', 'lost');
+            if (timerInterval) clearInterval(timerInterval);
+
+            // Enviar email de derrota al profesor
+            const formUrl = 'https://formsubmit.co/ajax/alejandroruizgueto@hotmail.es';
+            fetch(formUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    _subject: "💀 Escape Room FALLIDO: " + teamName,
+                    Investigadores: teamName,
+                    Resultado: "Derrota (Tiempo Agotado)",
+                    Errores_Cometidos: mistakes,
+                    _template: "table"
+                })
+            }).then(() => {
+                document.getElementById('defeatStatusText').innerText = "El Cónsul ha sido notificado de tu fracaso.";
+            }).catch(err => {
+                document.getElementById('defeatStatusText').innerText = "Error de conexión notificando al Cónsul.";
+            });
+
+            hide('gameStage');
+            hide('gameHeader');
+            hide('introStage');
+            show('defeatStage');
+        }
+
+        function victory() {
+            if (timerInterval) clearInterval(timerInterval);
+            localStorage.setItem('catilina_status', 'won');
+            
+            const secondsUsed = (45 * 60) - timeRemaining;
+            let finalScore = BASE_SCORE - secondsUsed - (mistakes * 50);
+            if (finalScore < 0) finalScore = 0; 
+
+            const timeStr = formatTime(timeRemaining);
+
+            document.getElementById('finalTeamName').innerText = teamName;
+            document.getElementById('finalTime').innerText = timeStr;
+            document.getElementById('finalMistakes').innerText = mistakes;
+            document.getElementById('finalScore').innerText = finalScore + " pts";
+            
+            localStorage.setItem('catilina_timeStr', timeStr);
+            localStorage.setItem('catilina_mistakes', mistakes.toString());
+            localStorage.setItem('catilina_score', finalScore + " pts");
+
+            hide('gameStage');
+            hide('gameHeader');
+            show('victoryStage');
+
+            // -----------------------------------------------------
+            // ENVÍO DE DATOS POR EMAIL (FormSubmit)
+            // -----------------------------------------------------
+            const formUrl = 'https://formsubmit.co/ajax/alejandroruizgueto@hotmail.es';
+            
+            fetch(formUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    _subject: "🏛️ Escape Room SUPERADO: " + teamName,
+                    Investigadores: teamName,
+                    Resultado: "Victoria",
+                    Tiempo_Sobrante: timeStr,
+                    Errores_Cometidos: mistakes,
+                    Puntuacion_Final: finalScore,
+                    _template: "table"
+                })
+            }).then(response => response.json())
+              .then(data => {
+                document.getElementById('statusDot').classList.replace('bg-amber-500', 'bg-emerald-500');
+                document.getElementById('statusDot').classList.remove('animate-pulse');
+                document.getElementById('statusText').innerText = "Enviado por Email al Cónsul";
+                document.getElementById('statusText').classList.replace('text-slate-400', 'text-emerald-400');
+            }).catch(err => {
+                console.error('Error enviando al senado:', err);
+                document.getElementById('statusDot').classList.replace('bg-amber-500', 'bg-red-500');
+                document.getElementById('statusText').innerText = "Error de conexión enviando email";
+                document.getElementById('statusText').classList.replace('text-slate-400', 'text-red-400');
+            });
+            // -----------------------------------------------------
+        }
+
+        function normalizeString(str) {
+            return str.toLowerCase().trim().replace(/[.,;:!?]/g, '');
+        }
+
+        function checkPrueba1() {
+            const q1 = normalizeString(document.getElementById('p1-q1').value);
+            const q2 = normalizeString(document.getElementById('p1-q2').value);
+            const q3 = normalizeString(document.getElementById('p1-q3').value);
+
+            const isQ1Correct = q1 === 'abutere';
+            const isQ2Correct = q2 === 'patere';
+            const isQ3Correct = q3 === 'patientia';
+
+            if (isQ1Correct && isQ2Correct && isQ3Correct) {
+                document.getElementById('p1-error').classList.add('hidden');
+                const btn = document.querySelector('#prueba1 button');
+                btn.innerText = "¡Moción Aprobada!";
+                btn.classList.replace('bg-amber-700', 'bg-emerald-700');
+                btn.classList.replace('hover:bg-amber-600', 'hover:bg-emerald-600');
+                btn.disabled = true;
+
+                const p2 = document.getElementById('prueba2');
+                p2.classList.remove('opacity-50', 'pointer-events-none');
+                p2.classList.add('ring-2', 'ring-emerald-500', 'shadow-[0_0_20px_rgba(16,185,129,0.3)]');
+                
+                document.getElementById('prueba1').classList.remove('ring-2', 'ring-amber-500');
+                document.getElementById('prueba1').classList.add('opacity-80');
+            } else {
+                mistakes++;
+                localStorage.setItem('catilina_mistakes', mistakes.toString());
+                document.getElementById('p1-error').classList.remove('hidden');
+                const panel = document.getElementById('prueba1');
+                panel.classList.add('border-red-500');
+                setTimeout(() => panel.classList.remove('border-red-500'), 1000);
+            }
+        }
+
+        function checkPrueba2() {
+            const q1 = document.querySelector('input[name="t1"]:checked')?.value;
+            const q2 = document.querySelector('input[name="t2"]:checked')?.value;
+            const q3 = document.querySelector('input[name="t3"]:checked')?.value;
+            const translationText = document.getElementById('fullTranslation').value.trim();
+
+            if (q1 === 'a' && q2 === 'b' && q3 === 'a' && translationText.length > 30) {
+                document.getElementById('p2-error').classList.add('hidden');
+                const btn = document.querySelector('#prueba2 button');
+                btn.innerText = "¡Condena Validada!";
+                btn.disabled = true;
+
+                const p3 = document.getElementById('prueba3');
+                p3.classList.remove('opacity-50', 'pointer-events-none');
+                p3.classList.add('ring-2', 'ring-red-500', 'shadow-[0_0_20px_rgba(239,68,68,0.3)]');
+                
+                document.getElementById('prueba2').classList.remove('ring-2', 'ring-emerald-500');
+                document.getElementById('prueba2').classList.add('opacity-80');
+            } else {
+                mistakes++;
+                localStorage.setItem('catilina_mistakes', mistakes.toString());
+                document.getElementById('p2-error').classList.remove('hidden');
+                const panel = document.getElementById('prueba2');
+                panel.classList.add('border-red-500');
+                setTimeout(() => panel.classList.remove('border-red-500'), 1000);
+            }
+        }
+
+        function checkPrueba3() {
+            const l1 = parseInt(document.getElementById('lock1').value, 10);
+            const l2 = parseInt(document.getElementById('lock2').value, 10);
+            const l3 = parseInt(document.getElementById('lock3').value, 10);
+            const l4 = parseInt(document.getElementById('lock4').value, 10);
+            const l5 = parseInt(document.getElementById('lock5').value, 10);
+
+            // Código final: 2 (2 infinitivos: patere, teneri), 3 (3ª declinación), 2 (2º caso - Vocativo), 3 (Oratoria), 2 (2ª conjugación)
+            if (l1 === 2 && l2 === 3 && l3 === 2 && l4 === 3 && l5 === 2) {
+                victory();
+            } else {
+                mistakes++;
+                localStorage.setItem('catilina_mistakes', mistakes.toString());
+                document.getElementById('p3-error').classList.remove('hidden');
+                const inputs = document.querySelectorAll('.candado-input');
+                inputs.forEach(i => {
+                    i.classList.add('border-red-500', 'text-red-500');
+                    setTimeout(() => i.classList.remove('border-red-500', 'text-red-500'), 1000);
+                });
+            }
+        }
     </script>
 </body>
 </html>
