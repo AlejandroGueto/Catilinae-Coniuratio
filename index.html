@@ -58,10 +58,6 @@
                 <p class="text-stone-600 text-sm dark:text-stone-400">Análisis contextual (sintaxis + morfología) mediante diferentes herramientas digitales de clásicas e IA.</p>
             </div>
             <div class="home-card space-y-3 shadow-md">
-                <h4 class="font-bold text-lg text-red-800 uppercase dark:text-red-500 ancient flex items-center gap-2"><i data-lucide="languages" class="w-5 h-5"></i> Trad. Históricas</h4>
-                <p class="text-stone-600 text-sm dark:text-stone-400">Comparativa real entre diversas traducciones literales o lineales. Tarjetas elegantes con las versiones multilingües.</p>
-            </div>
-            <div class="home-card space-y-3 shadow-md">
                 <h4 class="font-bold text-lg text-red-800 uppercase dark:text-red-500 ancient flex items-center gap-2"><i data-lucide="gamepad-2" class="w-5 h-5"></i> Gamificación</h4>
                 <p class="text-stone-600 text-sm dark:text-stone-400">Generación de ejercicios interactivos sorpresa en tiempo real. ¡Nunca será el mismo reto magistral!</p>
             </div>
@@ -142,14 +138,12 @@
                     <button onclick="toggleAudio()" class="w-full py-6 bg-white text-stone-900 rounded-3xl ancient font-black text-sm hover:bg-gold transition-all flex items-center justify-center gap-3 mb-6 shadow-2xl"><i data-lucide="play" id="play-icon"></i> <span id="btn-text">AUDIRE</span></button>
                     
                     <div class="space-y-3 mt-8 pt-6 border-t border-white/10">
-                        <button onclick="toggleTranslations()" class="w-full py-4 border border-stone-700 text-stone-300 rounded-2xl ancient text-[10px] uppercase tracking-widest hover:bg-stone-800 transition-all mb-2 flex items-center justify-center gap-2"><i data-lucide="languages" class="w-4 h-4"></i> Comparativa</button>
                         <button onclick="generateExercise()" class="w-full py-4 bg-red-900 text-white rounded-2xl ancient text-[10px] shadow-xl uppercase tracking-widest hover:bg-red-800 flex items-center justify-center gap-2"><i data-lucide="brain-circuit" class="w-4 h-4"></i> Reto Magistral</button>
                     </div>
                 </div>
                 <div id="exercise-area" class="hidden bg-white p-10 rounded-[3.5rem] border border-stone-100 shadow-2xl dark:bg-stone-800 dark:border-stone-700 animate-in zoom-in-95"></div>
             </div>
         </div>
-        <div id="trans-grid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-20 animate-in slide-in-from-bottom-12"></div>
     </main>
 
     <div id="note-modal" class="fixed inset-0 bg-black/80 z-[300] hidden items-center justify-center p-6 fade-in">
@@ -224,11 +218,7 @@
                         title: "De Fantasmate Athenodori",
                         title_es: "La casa encantada de Atenas",
                         meta: "Epistulae, VII, 27",
-                        content: "Erat Athenis magna domus, sed infamis. Per silentium noctis sonus ferri et strepitus vinculorum audiebantur. Mox apparebat idolum, senex macie confectus. Cum philosophus Athenodorus domum conduxisset, in tenebris vigilabat. Subito fantasma advenit et digito signum dedit. In area domus, monstro evanescente, Athenodorus ossa vincta catenis invenit.",
-                        translations: [
-                            { lang: "ES", text: "Había en Atenas una casa grande, pero de mala fama. En el silencio de la noche se oían el sonido del hierro y el ruido de cadenas. Pronto aparecía un espectro, un anciano consumido por la delgadez. Como el filósofo Atenodoro hubiera alquilado la casa, vigilaba en las tinieblas. De repente el fantasma llegó y dio una señal con el dedo. En el patio de la casa, al desaparecer el monstruo, Atenodoro encontró unos huesos atados con cadenas.", author: "Traducción Literal de Estudio" },
-                            { lang: "EN", text: "There was at Athens a large and roomy house, which had a bad name. In the dead of the night a noise, resembling the clashing of iron, was frequently heard, which, if you listened more attentively, sounded like the rattling of chains. Soon after, a ghost appeared in the form of an old man, extremely meagre and squalid. When the philosopher Athenodorus rented the house, he sat up watching in the dark. Suddenly the ghost came in and beckoned with his finger. In the courtyard, when the monster vanished, Athenodorus found bones intertwined with chains.", author: "William Melmoth (Adapted)" }
-                        ]
+                        content: "Erat Athenis magna domus, sed infamis. Per silentium noctis sonus ferri et strepitus vinculorum audiebantur. Mox apparebat idolum, senex macie confectus. Cum philosophus Athenodorus domum conduxisset, in tenebris vigilabat. Subito fantasma advenit et digito signum dedit. In area domus, monstro evanescente, Athenodorus ossa vincta catenis invenit."
                     }
                 ]
             }
@@ -257,7 +247,7 @@
             
             let sysPrompt = isExercise 
                 ? "You are an Expert Philologist. Create a multiple-choice question in Spanish about the provided Latin text. Respond ONLY in valid JSON: {\"pregunta\":\"...\",\"opciones\":[\"...\",\"...\",\"...\"],\"correcta\":0,\"explicacion\":\"...\"}."
-                : "You are an Expert Philologist. You must respond in valid JSON format. Provide the FULL dictionary lemma in lowercase including genitive and gender for nouns (e.g. domus, -us, f) as 'enunciado'. IMPORTANT: For 'morph', you MUST explicitly include gender and number for nouns, and voice for verbs. For 'syntax', strictly identify the grammatical case and its syntactical function in the sentence (e.g., 'Acusativo, Complemento Directo' / 'Accusative, Direct Object'). For 'etym', you MUST include the Proto-Indo-European (PIE) roots. Fields: enunciado, es(morph, syntax, def, etym), en(morph, syntax, def, etym), fr(morph, syntax, def, etym). DO NOT return trans_lit or trans_linealis fields.";
+                : "You are an Expert Philologist. You must respond in valid JSON format. Provide the FULL dictionary lemma in lowercase including genitive and gender for nouns as 'enunciado'. IMPORTANT: For 'morph', include gender/number for nouns, and voice/person for verbs. For 'syntax', strictly identify the grammatical case and its syntactical function in the sentence. For 'etym', include Proto-Indo-European (PIE) roots. Fields: enunciado, es(morph, syntax, def, etym). Respond ONLY in Spanish. DO NOT return trans_lit or other languages.";
 
             const r = await fetch('https://api.groq.com/openai/v1/chat/completions', { 
                 method: 'POST', headers: { 'Authorization': `Bearer ${k}`, 'Content-Type': 'application/json' }, 
@@ -272,8 +262,28 @@
 
         async function analyze(word) {
             openOracle(); const c = document.getElementById('oracle-content'); c.innerHTML = "<p class='py-48 text-center animate-pulse ancient text-stone-300 uppercase tracking-widest'>Consultatio Oraculi...</p>";
+            
+            const normalizedWord = word.toLowerCase();
+            const customDict = {
+                'cum': { enunciado: "cum", es: { morph: "Conjunción", syntax: "Cum histórico", def: "como, al...", etym: "Del PIE *kʷom", exp: "El 'cum histórico' o narrativo rige subjuntivo en tiempos del pasado (imperfecto o pluscuamperfecto). Sirve para enmarcar las circunstancias de la acción principal."} },
+                'monstro': { enunciado: "monstrum, -i, n", es: { morph: "Sustantivo, Neutro, Singular", syntax: "Ablativo Absoluto", def: "monstruo, prodigio", etym: "Del latín monēre", exp: "Junto al participio 'evanescente' forma un ablativo absoluto: una construcción sintácticamente independiente que suele equivaler a una oración subordinada adverbial."} },
+                'evanescente': { enunciado: "evanescens, -entis", es: { morph: "Participio de presente, activo, Neutro, Singular", syntax: "Ablativo Absoluto", def: "al desaparecer, desvaneciéndose", etym: "De ex- + vanus", exp: "Participio en ablativo que concuerda con 'monstro' para formar la estructura de ablativo absoluto."} },
+                'ossa': { enunciado: "os, ossis, n", es: { morph: "Sustantivo, Neutro, Plural", syntax: "Acusativo, C. Directo", def: "huesos", etym: "Del PIE *h₃est-", exp: "Núcleo del complemento directo del verbo 'invenit', modificado por el participio concertado 'vincta'."} },
+                'vincta': { enunciado: "vinctus, -a, -um", es: { morph: "Participio de perfecto, pasivo, Neutro, Plural", syntax: "Participio Concertado", def: "atados", etym: "Del verbo vincīre (atar)", exp: "Participio concertado. Concuerda en género, número y caso (acusativo neutro plural) con el sustantivo al que complementa ('ossa')."} },
+                'senex': { enunciado: "senex, senis, m", es: { morph: "Sustantivo, Masculino, Singular", syntax: "Nominativo, Aposición", def: "anciano", etym: "Del PIE *sen- (viejo)", exp: "Se encuentra en aposición al sujeto 'idolum'. A su vez, es el núcleo modificado por el participio concertado 'confectus'."} },
+                'confectus': { enunciado: "confectus, -a, -um", es: { morph: "Participio de perfecto, pasivo, Masculino, Singular", syntax: "Participio Concertado", def: "consumido, deshecho", etym: "De conficere", exp: "Participio concertado que concuerda en género, número y caso (nominativo masculino singular) con 'senex'."} },
+                'audiebantur': { enunciado: "audio, -ire", es: { morph: "Verbo, 3ª persona plural, Pretérito Imperfecto Ind., Voz Pasiva", syntax: "Núcleo del predicado", def: "se oían, eran oídos", etym: "Del PIE *h₂ew- (percibir)", exp: "Está en 3ª persona del plural pasivo para concordar con los dos núcleos del sujeto ('sonus' y 'strepitus')."} },
+                'catenis': { enunciado: "catena, -ae, f", es: { morph: "Sustantivo, Femenino, Plural", syntax: "Ablativo Instrumental", def: "con cadenas", etym: "Posible origen etrusco o PIE *kat-", exp: "Ablativo sin preposición que señala el instrumento o medio con el cual se realiza la acción de estar atados ('vincta')."} }
+            };
+
             try {
-                const res = JSON.parse(await callAI(`Analyze Latin word: "${word}" in context of ${currentWork.author}. Be extremely precise with the syntax: identify the case and its syntactic role (e.g. if the word is dominum, it is Accusative and Direct Object). Provide the full dictionary lemma in lowercase.`));
+                let res;
+                if (customDict[normalizedWord]) {
+                    res = customDict[normalizedWord];
+                } else {
+                    res = JSON.parse(await callAI(`Analyze Latin word: "${word}" in context of ${currentWork.author}. Be extremely precise with the syntax: identify the case and its syntactic role. Provide the full dictionary lemma in lowercase.`));
+                }
+
                 c.innerHTML = `
                     <div class="flex justify-between items-center mb-10 border-b pb-6">
                         <h3 class="greek-display text-7xl font-black dark:text-white tracking-tighter">${word}</h3>
@@ -281,12 +291,16 @@
                     </div>
                     <p class="text-xl font-bold text-stone-400 text-center uppercase tracking-widest mb-12 font-serif lowercase">${res.enunciado}</p>
                     
-                    <div class="space-y-16">` + 
-                    ['es','en','fr'].map(l => {
-                        if(!res[l]) return '';
-                        let etymLabel = l === 'es' ? 'Etimología (Raíces Indoeuropeas)' : l === 'en' ? 'Etymology (PIE Roots)' : 'Étymologie (Racines PIE)';
-                        return `<div class="border-l-[6px] border-stone-800 dark:border-gold pl-8"><span class="lang-tag bg-${l} mb-6 font-black uppercase">${l==='es'?'Español':l==='en'?'English':'Français'}</span><p class="text-md font-bold uppercase dark:text-stone-300 mb-1">${res[l].morph}</p><p class="text-sm font-bold text-terracotta dark:text-red-400 mb-4 uppercase italic">Sintaxis: ${res[l].syntax}</p><p class="text-3xl italic font-serif dark:text-white mb-6 leading-tight">"${res[l].def}"</p><div class="bg-stone-100/50 dark:bg-stone-800 p-6 rounded-2xl text-sm italic leading-relaxed text-stone-500 dark:text-stone-400"><b>${etymLabel}:</b><br>${res[l].etym}</div></div>`;
-                    }).join('') + `</div>`;
+                    <div class="space-y-16">
+                        <div class="border-l-[6px] border-stone-800 dark:border-gold pl-8">
+                            <span class="lang-tag bg-es mb-6 font-black uppercase">Español</span>
+                            <p class="text-md font-bold uppercase dark:text-stone-300 mb-1">${res.es.morph}</p>
+                            <p class="text-sm font-bold text-terracotta dark:text-red-400 mb-4 uppercase italic">Sintaxis: ${res.es.syntax}</p>
+                            <p class="text-3xl italic font-serif dark:text-white mb-6 leading-tight">"${res.es.def}"</p>
+                            ${res.es.exp ? `<div class="bg-amber-100 dark:bg-amber-900/30 p-4 rounded-xl mb-6 text-amber-900 dark:text-amber-200 text-sm font-serif border border-amber-200 dark:border-amber-800 shadow-sm leading-relaxed"><b>Nota Gramatical:</b><br>${res.es.exp}</div>` : ''}
+                            <div class="bg-stone-100/50 dark:bg-stone-800 p-6 rounded-2xl text-sm italic leading-relaxed text-stone-500 dark:text-stone-400"><b>Etimología (Raíces Indoeuropeas):</b><br>${res.es.etym}</div>
+                        </div>
+                    </div>`;
                 lucide.createIcons();
             } catch (e) { c.innerHTML = `<p class='p-16 bg-red-50 text-red-800 rounded-3xl font-black ancient uppercase'>Error IA: ${e.message}</p>`; }
         }
@@ -364,7 +378,7 @@
         function loadWork(ai, wi) {
             currentWork = canon[ai].works[wi]; currentWork.author = canon[ai].author; currentWork.ai = ai; currentWork.wi = wi;
             document.getElementById('view-title').innerText = currentWork.title; document.getElementById('view-meta').innerText = `${currentWork.author} • ${currentWork.meta}`;
-            document.getElementById('home-view').classList.add('hidden'); document.getElementById('reader-view').classList.remove('hidden'); document.getElementById('trans-grid').classList.add('hidden'); document.getElementById('exercise-area').classList.add('hidden');
+            document.getElementById('home-view').classList.add('hidden'); document.getElementById('reader-view').classList.remove('hidden'); document.getElementById('exercise-area').classList.add('hidden');
             const w = currentWork.content.trim().split(/\s+/); 
             // Genera los tokens asegurándose de quitar puntuación sólo para la búsqueda, no para la visualización
             document.getElementById('latin-container').innerHTML = w.map((x, i) => `<span class="word-token" id="token-${i}" onclick="analyze('${x.replace(/[.,·;:!?]/g,'')}')">${x}</span>`).join(' ');
@@ -374,7 +388,7 @@
         function loadExternalText() {
             const raw = document.getElementById('external-input').value.trim();
             if(!raw) return alert("Inserte texto primero.");
-            currentWork = { author: "Extraneus", title: "Interpretatio", meta: "Análisis Externo", content: raw, translations: [] };
+            currentWork = { author: "Extraneus", title: "Interpretatio", meta: "Análisis Externo", content: raw };
             document.getElementById('view-title').innerText = "Interpretatio";
             document.getElementById('home-view').classList.add('hidden'); document.getElementById('reader-view').classList.remove('hidden');
             const w = raw.split(/\s+/); 
@@ -416,15 +430,6 @@
             } catch (e) { area.innerHTML = "Error IA."; }
         }
         function checkAns(i, c, e) { const fb = document.getElementById('fb'); fb.innerHTML = i === c ? `✅ <span class="text-green-600 font-bold uppercase">Sapiens!</span><br><br>${e}` : `❌ <span class="text-red-600 font-black uppercase">Erratum.</span><br><br>${e}`; }
-        
-        function toggleTranslations() { 
-            const grid = document.getElementById('trans-grid'); grid.classList.toggle('hidden'); 
-            if (!grid.classList.contains('hidden')) { 
-                if (!currentWork.translations || currentWork.translations.length === 0) { grid.innerHTML = "<p class='col-span-full text-center ancient opacity-50 p-20 uppercase font-black tracking-widest'>Fragmentum Vacuum</p>"; return; } 
-                grid.innerHTML = currentWork.translations.map(t => `<div class="trans-card shadow-md dark:bg-stone-900 p-8 rounded-[2rem] border dark:border-stone-800"><p class="ancient text-[10px] uppercase text-stone-400 mb-6 tracking-widest font-black">${t.lang}</p><p class="text-xl italic font-serif dark:text-stone-300 leading-relaxed text-stone-800">"${t.text}"</p><p class="mt-8 text-[10px] font-bold text-stone-400 text-right pt-4 border-t">— ${t.author}</p></div>`).join(''); 
-                lucide.createIcons(); grid.scrollIntoView({ behavior: 'smooth' }); 
-            } 
-        }
     </script>
 </body>
 </html>
