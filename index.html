@@ -986,20 +986,37 @@
                 modal.querySelector('div').classList.remove('scale-95');
                 
                 if (!romanMap) {
-                    romanMap = L.map('roman-map').setView([42.5, 12.5], 6);
+                    // Centramos el mapa en el corazón de Italia
+                    romanMap = L.map('roman-map').setView([42.2, 12.5], 6);
                     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
                         attribution: '&copy; OpenStreetMap'
                     }).addTo(romanMap);
 
+                    // PUNTO 1: ROMA
                     L.marker([41.8902, 12.4922]).addTo(romanMap)
-                        .bindPopup('<b class="font-cinzel text-red-700">ROMA</b><br>El Senado está reunido en el Templo de Júpiter Estator.').openPopup();
+                        .bindPopup('<b class="font-cinzel text-red-700">ROMA (TEMPLO DE JÚPITER)</b><br>Sede de la reunión del Senado donde Cicerón denunció a Catilina.')
+                        .openPopup();
                     
+                    // PUNTO 2: PUENTE MILVIO
+                    L.marker([41.9351, 12.4727]).addTo(romanMap)
+                        .bindPopup('<b class="font-cinzel text-emerald-700">PUENTE MILVIO</b><br>Aquí fueron capturados los embajadores Alóbroges con las cartas que probaban la traición.');
+
+                    // PUNTO 3: FAESULAE
                     L.marker([43.8080, 11.2927]).addTo(romanMap)
-                        .bindPopup('<b class="font-cinzel text-slate-800">FAESULAE (Fiesole)</b><br>Campamento militar del rebelde Manlio. Catilina planea huir hacia aquí.');
+                        .bindPopup('<b class="font-cinzel text-slate-800">FAESULAE (Fiesole)</b><br>Campamento militar del general Manlio, donde se reunían las tropas rebeldes.');
+
+                    // PUNTO 4: PISTORIA
+                    L.marker([43.9318, 10.9177]).addTo(romanMap)
+                        .bindPopup('<b class="font-cinzel text-orange-700">PISTORIA (Pistoia)</b><br>Lugar de la batalla final (62 a.C.). Catilina murió luchando con valentía pero derrotado.');
+
+                    // PUNTO 5: CAPUA
+                    L.marker([41.1086, 14.2120]).addTo(romanMap)
+                        .bindPopup('<b class="font-cinzel text-blue-700">CAPUA</b><br>Ciudad clave donde los conjurados intentaron sublevar a las escuelas de gladiadores.');
                 }
+                // Forzamos al mapa a redibujarse para evitar que salga cortado
                 romanMap.invalidateSize();
             }, 10);
-            sayCicero("Observa bien, senador. Las legiones rebeldes acechan en Etruria.");
+            sayCicero("Observa la red de traición, senador. Desde las cartas del Puente Milvio hasta las tropas de Etruria.");
         }
 
         function closeMapModal() {
