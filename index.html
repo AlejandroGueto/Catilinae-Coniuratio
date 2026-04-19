@@ -565,12 +565,7 @@
                         </div>
                     </div>`;
             } else {
-                c.innerHTML = `
-                    <div class="flex flex-col items-center justify-center h-full text-center">
-                        <i data-lucide="shield-alert" class="w-16 h-16 text-red-500 mb-4"></i>
-                        <p class="text-xl text-red-400 font-cinzel">Palabra no registrada en el Códice local.</p>
-                        <p class="text-sm text-slate-400 mt-2">Prueba con otra palabra clave del texto.</p>
-                    </div>`;
+                c.innerHTML = `<div class="p-8 text-center"><i data-lucide="help-circle" class="w-12 h-12 mx-auto text-slate-500 mb-4"></i><p class="text-slate-400 font-cinzel">Palabra no detallada en el Códice.</p></div>`;
                 lucide.createIcons();
             }
         }
@@ -578,7 +573,7 @@
         // ==========================================
         // LÓGICA DEL JUEGO Y TEMPORIZADOR
         // ==========================================
-        function startGame() {
+       function startGame() {
             teamName = "Senado Romano"; 
             mistakes = 0;
             timeRemaining = 45 * 60;
@@ -594,7 +589,6 @@
                 timeRemaining--;
                 document.getElementById('timerDisplay').innerText = formatTime(timeRemaining);
                 
-                // Efecto "Roma en Llamas" (5 minutos = 300 segundos)
                 if (timeRemaining === 300) {
                     sayCicero("¡Roma está a punto de arder! ¡Apresuraos, senadores!", 6000);
                 }
@@ -612,7 +606,6 @@
             
             sayCicero("El Senado está reunido. Demuestra tu valía.");
         }
-
         function gameOver() {
             clearInterval(timerInterval);
             hide('gameStage');
@@ -808,6 +801,31 @@
             
             const pistaElegida = pistasDivinas[Math.floor(Math.random() * pistasDivinas.length)];
             sayCicero("Has entregado 3 minutos al destino. Escucha: " + pistaElegida, 6000);
+        }
+        // ==========================================
+        // SACRIFICIO DIVINO (Pista por Tiempo)
+        // ==========================================
+        function divineSacrifice() {
+            if (timeRemaining <= 180) {
+                sayCicero("¡Es demasiado tarde para ofrendas! El tiempo casi se ha agotado.");
+                return;
+            }
+            
+            timeRemaining -= 180;
+            document.getElementById('timerDisplay').innerText = formatTime(timeRemaining);
+            
+            document.body.style.boxShadow = "inset 0 0 100px rgba(168, 85, 247, 0.5)";
+            setTimeout(() => { document.body.style.boxShadow = "none"; }, 1000);
+            
+            const pistasDivinas = [
+                "Los dioses me susurran: 'abutere' rige ablativo... busca 'patientia'.",
+                "Visión divina: la palabra 'tempora' es un neutro de la 3ª declinación.",
+                "Oráculo: 'Quousque tandem' es una pregunta... ¿No ves los signos?",
+                "El mensajero divino indica que 'vides' pertenece a la segunda conjugación."
+            ];
+            
+            const pistaElegida = pistasDivinas[Math.floor(Math.random() * pistasDivinas.length)];
+            sayCicero("Has sacrificado 3 minutos. Escucha: " + pistaElegida, 6000);
         }
         // ==========================================
         // MAPA TÁCTICO DE ITALIA
