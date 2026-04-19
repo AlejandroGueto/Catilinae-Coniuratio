@@ -126,12 +126,6 @@
             <p class="text-lg md:text-xl leading-relaxed mb-8 text-slate-300 text-justify">
                 "Roma, año 63 a.C. Sois un grupo de senadores leales a la República. Catilina ha tramado una conjura para quemar la ciudad y asesinar a los cónsules. Cicerón acaba de pronunciar un encendido discurso en el templo de Júpiter Estator. Para evitar que Catilina escape y ordene el ataque a sus tropas, debéis descifrar las claves del discurso del cónsul. Tenéis 45 minutos antes de que arda Roma. Vuestra única arma: la gramática latina."
             </p>
-            
-            <div class="mb-6 bg-red-950/40 p-6 rounded border border-red-900/50">
-                <label for="teamName" class="block text-amber-500 font-cinzel text-lg mb-3">Identificación de los Senadores:</label>
-                <input type="text" id="teamName" class="w-full bg-black/50 border-2 border-red-900 text-white p-3 rounded font-cinzel focus:border-amber-500 focus:outline-none transition text-center text-lg shadow-inner" placeholder="Escribid vuestros nombres (Ej: Lucía, Marcos y Elena)" autocomplete="off">
-                <p id="name-error" class="text-red-400 text-sm mt-3 hidden font-bold">⚠️ El Senado requiere que os identifiquéis antes de entrar.</p>
-            </div>
 
             <div class="mb-8 bg-red-950/40 p-6 rounded border border-red-900/50 flex flex-col md:flex-row items-center justify-between gap-4">
                 <div class="text-left">
@@ -471,7 +465,6 @@
                 return `<span class="word-token" onclick="analyze('${cleanWord}')">${word}</span>`;
             }).join(' ');
 
-            checkGameState();
             loadTabula(); 
             
             setTimeout(() => sayCicero("¡Bienvenido, Senador! No hay tiempo que perder, la República está en peligro."), 2000);
@@ -654,15 +647,18 @@
             fb.innerHTML = i === c ? `✅ <span class="text-emerald-400 font-bold uppercase font-cinzel">¡Sapiens!</span><br><br>${e}` : `❌ <span class="text-red-400 font-bold uppercase font-cinzel">Erratum.</span><br><br>${e}`; 
         }
 
-        function startGame() {
-            const nameInput = document.getElementById('teamName').value.trim();
-            if (!nameInput) {
-                document.getElementById('name-error').classList.remove('hidden');
-                const inputField = document.getElementById('teamName');
-                inputField.classList.add('border-red-500');
-                setTimeout(() => inputField.classList.remove('border-red-500'), 1000);
-                return;
-            }
+       function startGame() {
+            teamName = "Senado Romano"; // Nombre por defecto para no dar error en el email
+            mistakes = 0;
+            
+            localStorage.setItem('catilina_status', 'playing');
+            localStorage.setItem('catilina_team', teamName);
+            localStorage.setItem('catilina_mistakes', '0');
+            localStorage.setItem('catilina_endTime', (Date.now() + timeRemaining * 1000).toString());
+            
+            resumeGame();
+            sayCicero("El Senado está reunido. Demuestra tu valía.");
+        }
             
             teamName = nameInput;
             mistakes = 0;
