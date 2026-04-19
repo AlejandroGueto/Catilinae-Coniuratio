@@ -32,7 +32,20 @@
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" opacity="0.05"><rect width="200" height="200" fill="%238b7355"/><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="3" stitchTiles="stitch"/></filter><rect width="200" height="200" filter="url(%23n)" opacity="0.5"/></svg>');
         }
         .hidden-stage {
-            display: none;
+            display: none !important; /* El !important obliga al navegador a ocultarlo siempre */
+        }
+
+        /* --- NUEVOS ESTILOS PREMIUM ROMANOS --- */
+        .glass-panel {
+            background: rgba(20, 5, 5, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(185, 28, 28, 0.4);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(185, 28, 28, 0.15);
+            transition: all 0.4s ease;
+        }
+        .glass-panel:hover {
+            border-color: rgba(245, 158, 11, 0.5); /* Brillo ámbar al pasar el ratón */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9), inset 0 0 30px rgba(245, 158, 11, 0.08);
         }
         .input-latino {
             background: transparent;
@@ -117,7 +130,8 @@
     <div id="introStage" class="w-full max-w-3xl flex flex-col items-center text-center mt-6 md:mt-12 space-y-8">
         <h1 class="text-5xl md:text-6xl text-amber-500 tracking-widest uppercase text-shadow-sm">Coniuratio<br><span class="text-3xl md:text-4xl text-slate-300">Catilinae</span></h1>
         
-        <div class="bg-black/60 p-8 rounded-lg border border-red-900/50 shadow-2xl backdrop-blur-sm w-full max-w-2xl">
+       <div class="glass-panel p-10 rounded-3xl w-full max-w-2xl relative overflow-hidden">
+            <div class="absolute -top-32 -right-32 w-96 h-96 bg-gradient-to-br from-red-900/40 to-amber-600/10 rounded-full blur-[100px] pointer-events-none"></div>
             
             <button onclick="openVideoModal()" class="mb-8 w-full py-4 bg-black/80 border border-amber-500/50 rounded-lg text-amber-500 font-cinzel text-lg hover:bg-red-950/40 hover:border-amber-400 transition-all flex items-center justify-center gap-3 shadow-[0_0_15px_rgba(217,119,6,0.2)]">
                 <i data-lucide="film" class="w-6 h-6"></i> Ver Contexto Histórico
@@ -158,7 +172,7 @@
                 </div>
             </div>
 
-            <div class="bg-black/60 border border-red-900/50 p-6 rounded-lg shadow-lg relative overflow-hidden">
+            <div class="glass-panel p-8 rounded-2xl relative overflow-hidden">
                 <h3 class="text-xl text-amber-500 mb-4 flex items-center gap-2 font-cinzel">
                     <i data-lucide="brain-circuit" class="w-5 h-5"></i> Reto Magistral
                 </h3>
@@ -170,7 +184,7 @@
 
         <div class="lg:col-span-3 flex flex-col space-y-6">
             
-            <div id="prueba1" class="bg-black/60 border border-red-900/50 p-6 rounded-lg shadow-lg relative overflow-hidden transition-all duration-500">
+            <div id="prueba1" class="glass-panel p-8 rounded-2xl relative overflow-hidden transition-all duration-500">
                 <div class="absolute top-0 left-0 w-1 h-full bg-amber-500"></div>
                 <h3 class="text-2xl text-amber-500 mb-4 flex items-center gap-2 font-cinzel">
                     <span class="bg-amber-900/50 p-2 rounded text-amber-300 border border-amber-700 text-sm">I</span> El Ojo de Júpiter (Sintaxis)
@@ -197,7 +211,7 @@
                 <p id="p1-error" class="text-red-400 text-sm mt-3 hidden text-right">Los senadores murmuran en tu contra (-50 pts). Revisa la ortografía.</p>
             </div>
 
-            <div id="prueba2" class="bg-black/60 border border-red-900/50 p-6 rounded-lg shadow-lg relative overflow-hidden transition-all duration-500 opacity-50 pointer-events-none">
+            <div id="prueba2" class="glass-panel p-8 rounded-2xl relative overflow-hidden transition-all duration-500 opacity-50 pointer-events-none">
                 <div class="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
                 <h3 class="text-2xl text-emerald-500 mb-4 flex items-center gap-2 font-cinzel">
                     <span class="bg-emerald-900/50 p-2 rounded text-emerald-300 border border-emerald-700 text-sm">II</span> La Voz del Cónsul (Traducción)
@@ -272,7 +286,7 @@
                 <p id="p2-error" class="text-red-400 text-sm mt-3 hidden text-right">La traducción es imprecisa (-50 pts). Revisa el test y asegúrate de redactar el texto completo.</p>
             </div>
 
-            <div id="prueba3" class="bg-black/60 border border-red-900/50 p-6 rounded-lg shadow-lg relative overflow-hidden transition-all duration-500 opacity-50 pointer-events-none">
+            <div id="prueba3" class="glass-panel p-8 rounded-2xl relative overflow-hidden transition-all duration-500 opacity-50 pointer-events-none">
                 <div class="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
                 <h3 class="text-2xl text-red-500 mb-4 flex items-center gap-2 font-cinzel">
                     <span class="bg-red-900/50 p-2 rounded text-red-300 border border-red-700 text-sm">III</span> El Código del Senadoconsulto
